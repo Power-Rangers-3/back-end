@@ -1,0 +1,51 @@
+version: '3.8'
+
+services:
+  main:
+    container_name: TownSendLogic
+    build:
+      context: .
+    env_file:
+      - .env
+    volumes:
+      - .:/app
+      - /app/node_modules
+    ports:
+      - ${PORT}:${PORT}
+      - ${ALTERNATIVE_PORT}:${ALTERNATIVE_PORT}
+    command: yarn start:dev
+    depends_on:
+      - postgres
+    restart: always
+
+  postgres:
+    container_name: Postgres
+    image: postgres:15
+    env_file:
+      - .env
+    environment:
+      PG_DATA: /var/lib/postgresql/data
+    ports:
+      - ${POSTGRES_PORT}:${POSTGRES_PORT}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    restart: always
+
+  pgadmin:
+    container_name: PG_admin
+    image: dpage/pgadmin4
+    env_file:
+      - .env
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=${PGADMIN_DEFAULT_EMAIL}
+      - PGADMIN_DEFAULT_PASSWORD=${PGADMIN_DEFAULT_PASSWORD}
+    ports:
+      - ${PGADMIN_LOCAL_PORT}:${PGADMIN_NATIVE_PORT}
+    restart: unless-stopped
+    volumes:
+      - pgadmin:/root/.pgadmin
+
+
+volumes:
+  pgdata:
+  pgadmin:
