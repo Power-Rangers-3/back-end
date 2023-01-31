@@ -5,6 +5,7 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { RolesService } from '../roles/roles.service';
 import { AddRoleDto } from './dto/add-role.dto';
 import * as bcrypt from 'bcryptjs';
+import { UpdateUserDto } from './dto/update-user.dto';
 
 @Injectable()
 export class UsersService {
@@ -44,7 +45,7 @@ export class UsersService {
     throw new HttpException('User or role do not found', HttpStatus.NOT_FOUND);
   }
 
-  async updateUser(id: string, userDto: Partial<User>) {
+  async updateUser(id: string, userDto: Partial<UpdateUserDto>) {
     const user = await this.userRepository.findByPk(+id);
     if (!user) throw new HttpException('User not found', HttpStatus.NOT_FOUND);
     if (!userDto) throw new HttpException('No content', HttpStatus.NO_CONTENT);

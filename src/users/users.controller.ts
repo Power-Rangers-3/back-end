@@ -11,13 +11,20 @@ import {
 } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UsersService } from './users.service';
-import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiBody,
+  ApiOperation,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 import { User } from './user.models';
 import { Roles } from 'src/auth/roles-auth.decorator';
 import { RolesGuard } from 'src/auth/roles.guard';
 import { AddRoleDto } from './dto/add-role.dto';
 import { ValidationPipe } from '../pipes/validation.pipe';
 import { JwtAuthGuard } from './../auth/jwt-auth.guard';
+import { UpdateUserDto } from './dto/update-user.dto';
 
 @ApiTags('Users')
 @Controller('users')
@@ -48,14 +55,19 @@ export class UsersController {
     return this.userService.addRole(dto);
   }
 
+  @ApiBearerAuth()
   @ApiOperation({ summary: 'update user data' })
+  @ApiBody({ type: UpdateUserDto })
   @ApiResponse({ status: 200, type: User })
   @UseGuards(JwtAuthGuard)
   @Patch('/:id/update')
-  update(@Param('id') id: string, @Body() dto: Partial<User>) {
+  update(@Param('id') id: string, @Body() dto: Partial<UpdateUserDto>) {
     return this.userService.updateUser(id, dto);
   }
+
+  @ApiBearerAuth()
   @ApiOperation({ summary: 'delete user field data' })
+  @ApiBody({ enum: ['phone', 'telegram', 'name', 'fullname'] })
   @ApiResponse({ status: 200, type: User })
   @UseGuards(JwtAuthGuard)
   @Delete('/:id/delete')
