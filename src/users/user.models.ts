@@ -1,7 +1,8 @@
-import { BelongsToMany, Column, DataType, Model, Table } from "sequelize-typescript";
+import { BelongsToMany, Column, DataType, HasOne, Model, Table } from "sequelize-typescript";
 import { ApiProperty } from "@nestjs/swagger";
 import { Role } from "src/roles/roles.model";
 import { UserRoles } from "src/roles/user-roles.model";
+import { File } from '../file/file.model'
 
 interface UserCreationAttr {
   email: string,
@@ -26,4 +27,6 @@ export class User extends Model<User, UserCreationAttr>{
   @BelongsToMany(() => Role, () => UserRoles)
   roles: Role[]
 
+  @HasOne(() => File)
+  file?: File[]
 }
