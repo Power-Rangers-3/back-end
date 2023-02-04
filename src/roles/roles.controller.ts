@@ -1,26 +1,25 @@
-import { Body, Controller, Get, Param, Post } from "@nestjs/common";
-import { RolesService } from "./roles.service";
-import { CreateRoleDto } from "./dto/create-role.dto";
-import { ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
-import { Role } from "./roles.model";
+import { Body, Controller, Get, Param, Post } from '@nestjs/common';
+import { RolesService } from './roles.service';
+import { CreateRoleDto } from './dto/create-role.dto';
+import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { Role } from './roles.model';
 
 @ApiTags('Roles')
 @Controller('roles')
 export class RolesController {
-  constructor(private roleService: RolesService) {
-  }
+  constructor(private roleService: RolesService) {}
 
-  @ApiOperation({summary: 'creating role'})
-  @ApiResponse({status: 200, type: Role})
+  @ApiOperation({ summary: 'creating role' })
+  @ApiResponse({ status: 200, type: Role })
   @Post()
-  create(@Body() dto: CreateRoleDto){
-    return this.roleService.createRole(dto)
+  create(@Body() dto: CreateRoleDto) {
+    return this.roleService.createRole(dto);
   }
 
-  @ApiOperation({summary: `get user's role`})
-  @ApiResponse({status: 200, type: [Role]})
+  @ApiOperation({ summary: `get user's role` })
+  @ApiResponse({ status: 200, type: [Role] })
   @Get('/:value')
   getByValue(@Param('value') value: string) {
-    return this.roleService.getRoleByValue(value)
+    return this.roleService.getRoleByValue(value);
   }
 }
