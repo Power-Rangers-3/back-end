@@ -29,6 +29,11 @@ export class FileService {
     return dataFile
   }
   async saveFile(dataFile: SaveFileDto): Promise<FileElementResponse> {
-    return this.fileRepository.create(dataFile)
+    await this.fileRepository.create(dataFile)
+    const response = {
+      name: dataFile.name,
+      url: dataFile.url
+    }
+    return response
   }
 }

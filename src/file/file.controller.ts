@@ -1,10 +1,11 @@
-import { Controller, Post, UploadedFile, UseInterceptors } from '@nestjs/common';
+import { Controller, HttpCode, Post, UploadedFile, UseInterceptors } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { FileService } from './file.service';
 import { Express } from 'express';
-import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ApiBody, ApiConsumes, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { FileElementResponse } from './dto/file-element.response';
 import { SaveFileDto } from './dto/save-file.dto';
+import { ApiFile } from './api-file.decorator';
 
 @ApiTags('Upload file')
 @Controller('file')
@@ -15,8 +16,11 @@ export class FileController {
   ) {}
 
   @ApiOperation({summary: 'Upload file (image)'})
-  // @UseGuards(JwtAuthGuard)
   @Post('upload')
+  @HttpCode(200)
+  @ApiConsumes('multipart/form-data')
+  @ApiResponse({status: 200, type: FileElementResponse})
+  @ApiFile()
   @UseInterceptors(FileInterceptor('file'))
   async uploadFile(@UploadedFile() file: Express.Multer.File): Promise<FileElementResponse> {
    const newFile: SaveFileDto = await this.filesService.uploadFile(file)
