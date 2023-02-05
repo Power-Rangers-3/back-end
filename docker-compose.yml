@@ -30,7 +30,8 @@ services:
     ports:
       - ${POSTGRES_PORT}:${POSTGRES_PORT}
     volumes:
-      - pgdata:/var/lib/postgresql/data
+      # - pgdata:/var/lib/postgresql/data
+      - ./data/postgres:/var/lib/postgresql/data
     restart: always
 
   pgadmin:
@@ -49,5 +50,5 @@ services:
 
 
 volumes:
-  pgdata:
+  # pgdata:
   pgadmin:

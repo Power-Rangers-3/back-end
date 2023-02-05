@@ -1,16 +1,9 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Table, Model, Column, DataType, ForeignKey, CreatedAt, BelongsTo } from 'sequelize-typescript';
+import { Table, Model, Column, DataType, ForeignKey, BelongsTo } from 'sequelize-typescript';
 import { User } from 'src/users/user.models';
 
-interface FileCreationAttr {
-  name: string,
-  path: string,
-  url: string,
-  userId: number,
-}
-
 @Table({tableName: 'files'})
-export class File extends Model<File, FileCreationAttr> {
+export class File extends Model<File> {
 
   @ApiProperty({example: '1', description: 'uniq id'})
   @Column({
@@ -20,6 +13,13 @@ export class File extends Model<File, FileCreationAttr> {
     primaryKey: true,
   })
   id: number
+
+  @ApiProperty({example: '1564314090_3.jpeg', description: 'name file'})
+  @Column({
+    type: DataType.STRING,
+    allowNull: false,
+  })
+  name: string
 
   @ApiProperty({example: '/app/uploads/1564314090_3.jpeg', description: 'local file path'})
   @Column({
