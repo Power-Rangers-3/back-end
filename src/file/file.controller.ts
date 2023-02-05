@@ -1,12 +1,14 @@
-import { Controller, HttpCode, Post, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common';
+import { Controller, HttpCode, Post, Req, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { FileService } from './file.service';
 import { Express } from 'express';
-import { ApiBearerAuth, ApiConsumes, ApiHeader, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiConsumes, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { FileElementResponse } from './dto/file-element.response';
 import { SaveFileDto } from './dto/save-file.dto';
 import { ApiFile } from './api-file.decorator';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
+import { CurrentUser } from 'src/decorators/current-user';
+import { User } from 'src/users/user.models';
 
 @ApiTags('Upload file')
 @Controller('file')
@@ -25,8 +27,8 @@ export class FileController {
   @ApiResponse({status: 200, type: FileElementResponse})
   @ApiFile()
   @UseInterceptors(FileInterceptor('file'))
-  async uploadFile(@UploadedFile() file: Express.Multer.File): Promise<FileElementResponse> {
-   const newFile: SaveFileDto = await this.filesService.uploadFile(file)
+  async uploadFile(@UploadedFile() file: Express.Multer.File, @CurrentUser('id') id: User['id']): Promise<FileElementResponse> {
+   const newFile: SaveFileDto = await this.filesService.uploadFile(file, id)
    return this.filesService.saveFile(newFile)
   }
 }

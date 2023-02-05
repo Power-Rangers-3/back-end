@@ -11,7 +11,7 @@ export class FileService {
 
   constructor(@InjectModel(File) private fileRepository: typeof File) {}
 
-  async uploadFile(file: Express.Multer.File): Promise<SaveFileDto>{
+  async uploadFile(file: Express.Multer.File, id: number): Promise<SaveFileDto> {
     const uploadFolder = `${process.cwd()}/uploads`
     await ensureDir(uploadFolder)
     const fileExtension = file.mimetype.split('/')[1]
@@ -24,7 +24,7 @@ export class FileService {
       name: file.originalname,
       path,
       url: `${urlHost}:${urlPort}/file/${hashNameFile}`,
-      userId: 1
+      userId: id
     }
     return dataFile
   }
