@@ -8,7 +8,7 @@ export class UpdateUserDto {
     required: false,
   })
   @IsString({ message: 'should be string' })
-  @IsEmail({}, { message: 'uncorrect email' })
+  @IsEmail({}, { message: 'incorrect email' })
   readonly email: string;
   @ApiProperty({
     example: 'password123',
@@ -16,7 +16,7 @@ export class UpdateUserDto {
     required: false,
   })
   @IsString({ message: 'should be string' })
-  @Length(4, 16, { message: 'uncorrect length (more than 4, less than 16)' })
+  @Length(4, 16, { message: 'incorrect length (more than 4, less than 16)' })
   password: string;
   @ApiProperty({
     example: 'Ivan',
@@ -38,7 +38,7 @@ export class UpdateUserDto {
   readonly phone: string | null;
   @ApiProperty({
     example: 'https://t.me/@ivanov',
-    description: 'telegram adress',
+    description: 'telegram address',
     required: false,
   })
   readonly telegram: string | null;

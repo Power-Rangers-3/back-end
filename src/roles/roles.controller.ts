@@ -16,7 +16,7 @@ export class RolesController {
     return this.roleService.createRole(dto);
   }
 
-  @ApiOperation({ summary: `get user's role` })
+  @ApiOperation({ summary: `check if user's role already exist` })
   @ApiResponse({ status: 200, type: [Role] })
   @Get('/:value')
   getByValue(@Param('value') value: string) {
