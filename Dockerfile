@@ -4,10 +4,10 @@ WORKDIR /app
 
 COPY package*.json ./
 
-RUN yarn
+# RUN yarn
 
 COPY . .
 
-COPY ./dist ./dist
+# COPY ./dist ./dist
 
 CMD ["yarn", "start:dev"]
