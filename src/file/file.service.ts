@@ -25,7 +25,7 @@ export class FileService {
     const dataFile = {
       name: file.originalname,
       path,
-      url: `${urlHost}:${urlPort}/file/${hashNameFile}`,
+      url: `${urlHost}:${urlPort}/${hashNameFile}`,
       userId: id,
     };
     return dataFile;
