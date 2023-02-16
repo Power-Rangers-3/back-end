@@ -6,12 +6,14 @@ import { RolesService } from '../roles/roles.service';
 import { AddRoleDto } from './dto/add-role.dto';
 import * as bcrypt from 'bcryptjs';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class UsersService {
   constructor(
     @InjectModel(User) private userRepository: typeof User,
     private roleService: RolesService,
+    private jwtService: JwtService,
   ) {}
 
   async createUser(dto: CreateUserDto) {
@@ -21,6 +23,12 @@ export class UsersService {
       await user.$set('roles', [role.id]);
       user.roles = [role];
     }
+    return user;
+  }
+
+  async getUserInfo(token: string) {
+    const userToken = token.split(' ')[1];
+    const user = this.jwtService.verify(userToken);
     return user;
   }
 
