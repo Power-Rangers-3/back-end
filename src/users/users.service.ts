@@ -8,7 +8,6 @@ import * as bcrypt from 'bcryptjs';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { JwtService } from '@nestjs/jwt';
 import { NewPassword } from './dto/refresh-password.dto';
-import { log } from 'console';
 
 @Injectable()
 export class UsersService {
@@ -38,9 +37,8 @@ export class UsersService {
     }
   }
 
-  async getUserInfo(token: string) {
-    const userToken = token.split(' ')[1];
-    const user = this.jwtService.verify(userToken);
+  async getUserInfo(email: string) {
+    const user = await this.getUserByEmail(email);
     return user;
   }
 

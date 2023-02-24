@@ -9,7 +9,6 @@ import {
   Post,
   UseGuards,
 } from '@nestjs/common';
-import { CreateUserDto } from './dto/create-user.dto';
 import { UsersService } from './users.service';
 import {
   ApiBearerAuth,
@@ -25,6 +24,7 @@ import { AddRoleDto } from './dto/add-role.dto';
 import { JwtAuthGuard } from './../auth/jwt-auth.guard';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { NewPassword } from './dto/refresh-password.dto';
+import { CurrentUser } from 'src/decorators/current-user';
 
 @ApiTags('Users')
 @Controller('users')
@@ -34,8 +34,8 @@ export class UsersController {
   @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'get information about user' })
   @Get('/info')
-  getInfo(@Headers('Authorization') token: string) {
-    return this.userService.getUserInfo(token);
+  getInfo(@CurrentUser('email') email: User['email']) {
+    return this.userService.getUserInfo(email);
   }
 
   @ApiOperation({ summary: 'add one more role for user / only for admin' })

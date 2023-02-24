@@ -18,7 +18,7 @@ export class File extends Model<File> {
     autoIncrement: true,
     primaryKey: true,
   })
-  id: number;
+  id: string;
 
   @ApiProperty({ example: '1564314090_3.jpeg', description: 'name file' })
   @Column({
@@ -52,7 +52,7 @@ export class File extends Model<File> {
     type: DataType.INTEGER,
     allowNull: false,
   })
-  userId: number;
+  userId: string;
 
   @BelongsTo(() => User)
   user: User;

@@ -16,13 +16,13 @@ export class UserRoles extends Model<UserRoles> {
     autoIncrement: true,
     primaryKey: true,
   })
-  id: number;
+  id: string;
 
   @ForeignKey(() => Role)
   @Column({ type: DataType.INTEGER })
-  roleId: number;
+  roleId: string;
 
   @ForeignKey(() => User)
   @Column({ type: DataType.INTEGER })
-  userId: number;
+  userId: string;
 }
