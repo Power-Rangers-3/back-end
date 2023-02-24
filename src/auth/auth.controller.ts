@@ -25,7 +25,7 @@ export class AuthController {
       httpOnly: true,
       secure: true,
     });
-    return { token: token.accessToken };
+    return { value: token.accessToken };
   }
 
   @ApiOperation({ summary: 'creating new account' })
@@ -40,7 +40,7 @@ export class AuthController {
       httpOnly: true,
       secure: true,
     });
-    return { token: token.accessToken };
+    return { value: token.accessToken };
   }
 
   @ApiOperation({ summary: 'refresh token' })
@@ -56,6 +56,6 @@ export class AuthController {
       httpOnly: true,
       secure: true,
     });
-    return { token: token.accessToken };
+    return { value: token.accessToken };
   }
 }
