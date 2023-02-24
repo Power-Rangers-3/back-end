@@ -3,11 +3,11 @@ import {
   Controller,
   Delete,
   Get,
+  Headers,
   Param,
   Patch,
   Post,
   UseGuards,
-  UsePipes,
 } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UsersService } from './users.service';
@@ -22,7 +22,6 @@ import { User } from './user.models';
 import { Roles } from 'src/auth/roles-auth.decorator';
 import { RolesGuard } from 'src/auth/roles.guard';
 import { AddRoleDto } from './dto/add-role.dto';
-import { ValidationPipe } from '../pipes/validation.pipe';
 import { JwtAuthGuard } from './../auth/jwt-auth.guard';
 import { UpdateUserDto } from './dto/update-user.dto';
 
@@ -36,6 +35,13 @@ export class UsersController {
   @Post()
   create(@Body() userDto: CreateUserDto) {
     return this.userService.createUser(userDto);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @ApiOperation({ summary: 'get information about user' })
+  @Get('/info')
+  gettest(@Headers('Authorization') token: string) {
+    return this.userService.getUserInfo(token);
   }
 
   @ApiOperation({ summary: 'getting all users' })

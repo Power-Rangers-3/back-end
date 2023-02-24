@@ -22,6 +22,11 @@ export class AuthService {
     return this.generateToken(user);
   }
 
+  async refresh(refreshToken: string) {
+    const user = await this.validateRefreshToken(refreshToken);
+    return this.generateToken(user);
+  }
+
   async registration(userDto: CreateUserDto) {
     const candidate = await this.userService.getUserByEmail(userDto.email);
     if (candidate) {
@@ -35,13 +40,14 @@ export class AuthService {
       ...userDto,
       password: hashPassword,
     });
-    return this.generateToken(user);
+    return await this.generateToken(user);
   }
 
   private async generateToken(user: User) {
     const payload = { email: user.email, id: user.id, roles: user.roles };
     return {
-      token: this.jwtService.sign(payload),
+      accessToken: this.jwtService.sign(payload, { expiresIn: '10s' }),
+      refreshToken: this.jwtService.sign(payload, { expiresIn: '60d' }),
     };
   }
 
@@ -55,5 +61,11 @@ export class AuthService {
       return user;
     }
     throw new UnauthorizedException({ message: 'Uncorrect email or password' });
+  }
+
+  private async validateRefreshToken(token: string) {
+    const user = this.jwtService.verify(token);
+    console.log(user);
+    return user;
   }
 }

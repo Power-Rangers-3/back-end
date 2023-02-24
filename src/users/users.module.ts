@@ -7,6 +7,7 @@ import { Role } from '../roles/roles.model';
 import { UserRoles } from '../roles/user-roles.model';
 import { RolesModule } from '../roles/roles.module';
 import { AuthModule } from '../auth/auth.module';
+import { JwtModule } from '@nestjs/jwt';
 
 @Module({
   controllers: [UsersController],
@@ -15,6 +16,9 @@ import { AuthModule } from '../auth/auth.module';
     SequelizeModule.forFeature([User, Role, UserRoles]),
     RolesModule,
     forwardRef(() => AuthModule),
+    JwtModule.register({
+      secret: process.env.PRIVATE_KEY,
+    }),
   ],
   exports: [UsersService],
 })

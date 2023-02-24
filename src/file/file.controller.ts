@@ -2,7 +2,6 @@ import {
   Controller,
   HttpCode,
   Post,
-  Req,
   UploadedFile,
   UseGuards,
   UseInterceptors,
