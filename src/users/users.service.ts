@@ -8,7 +8,6 @@ import * as bcrypt from 'bcryptjs';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { JwtService } from '@nestjs/jwt';
 import { NewPassword } from './dto/refresh-password.dto';
-import { log } from 'console';
 
 @Injectable()
 export class UsersService {
