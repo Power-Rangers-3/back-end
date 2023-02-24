@@ -69,7 +69,6 @@ export class AuthService {
 
   private async validateRefreshToken(token: string) {
     const user = this.jwtService.verify(token);
-    console.log(user);
     return user;
   }
 }

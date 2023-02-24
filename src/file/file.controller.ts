@@ -31,7 +31,7 @@ export class FileController {
   @ApiOperation({ summary: 'Upload file (image)' })
   @Post('upload')
   @HttpCode(200)
-  @ApiBearerAuth('access-token')
+  @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @ApiConsumes('multipart/form-data')
   @ApiResponse({ status: 200, type: FileElementResponse })
