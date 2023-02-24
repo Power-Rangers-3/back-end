@@ -7,6 +7,8 @@ import { AddRoleDto } from './dto/add-role.dto';
 import * as bcrypt from 'bcryptjs';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { JwtService } from '@nestjs/jwt';
+import { NewPassword } from './dto/refresh-password.dto';
+import { log } from 'console';
 
 @Injectable()
 export class UsersService {
@@ -26,15 +28,20 @@ export class UsersService {
     return user;
   }
 
+  async refreshPassword(dto: NewPassword) {
+    const user = await this.getUserByEmail(dto.email);
+    const passwordEquals = await bcrypt.compare(dto.password, user.password);
+
+    if (user && passwordEquals) {
+      const hashPassword: string = await bcrypt.hash(dto.newPassword, 5);
+      user.password = hashPassword;
+    }
+  }
+
   async getUserInfo(token: string) {
     const userToken = token.split(' ')[1];
     const user = this.jwtService.verify(userToken);
     return user;
-  }
-
-  async getALlUsers() {
-    const users = await this.userRepository.findAll({ include: { all: true } });
-    return users;
   }
 
   async getUserByEmail(email: string) {

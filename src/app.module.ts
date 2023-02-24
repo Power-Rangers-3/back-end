@@ -31,7 +31,7 @@ import { FileModule } from './file/file.module';
     UsersModule,
     RolesModule,
     AuthModule,
-    FileModule,
+    // FileModule,
   ],
   providers: [AuthService],
 })

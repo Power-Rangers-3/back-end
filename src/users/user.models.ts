@@ -44,7 +44,7 @@ export class User extends Model<User, UserCreationAttr> {
 
   @ApiProperty({ example: 'Ivanov', description: 'non uniq surname' })
   @Column({ type: DataType.STRING, allowNull: true })
-  surname: string;
+  fullname: string;
 
   @ApiProperty({
     example: 'https://t.me/@ivanov',

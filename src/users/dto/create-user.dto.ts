@@ -3,12 +3,27 @@ import { IsEmail, IsString, Length } from 'class-validator';
 
 export class CreateUserDto {
   @ApiProperty({
+    example: 'oleg',
+    description: 'name of user',
+  })
+  @IsString({ message: 'should be string' })
+  readonly name: string;
+
+  @ApiProperty({
+    example: 'Orlov',
+    description: 'name of user',
+  })
+  @IsString({ message: 'should be string' })
+  readonly fullname: string;
+
+  @ApiProperty({
     example: 'myemail@gmail.com',
     description: 'uniq users email',
   })
   @IsString({ message: 'should be string' })
   @IsEmail({}, { message: 'incorrect email' })
   readonly email: string;
+
   @ApiProperty({ example: 'password123', description: 'non uniq password' })
   @IsString({ message: 'should be string' })
   @Length(4, 16, { message: 'incorrect length (more than 4, less than 16)' })
