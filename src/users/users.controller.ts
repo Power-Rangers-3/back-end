@@ -32,7 +32,10 @@ export class UsersController {
   constructor(private userService: UsersService) {}
 
   @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  @ApiResponse({  })
   @ApiOperation({ summary: 'get information about user' })
+  @ApiResponse({ status: 200, type: User })
   @Get('/info')
   getInfo(@CurrentUser('email') email: User['email']) {
     return this.userService.getUserInfo(email);
@@ -47,6 +50,9 @@ export class UsersController {
     return this.userService.addRole(dto);
   }
 
+  @ApiOperation({ summary: 'update user password in personal account' })
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
   @Post('/refresh-password')
   refreshPassword(@Body() dto: NewPassword) {
     return this.userService.refreshPassword(dto);
