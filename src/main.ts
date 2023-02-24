@@ -5,13 +5,20 @@ import * as cookieParser from 'cookie-parser';
 
 async function start() {
   const PORT = process.env.PORT || 5000;
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(AppModule, {
+    cors: {
+      origin: '*',
+      methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+      preflightContinue: false,
+      optionsSuccessStatus: 204,
+    },
+  });
 
   const config = new DocumentBuilder()
     .setTitle('Description of BD for TownSend')
     .setDescription('Docs for REST API')
     .setVersion('1.0.0')
-    .addTag('Created by PrimkY')
+    .addTag('Created by BackTeam')
     .addBearerAuth(
       {
         description: `[just text field] Please enter token in following format: Bearer <JWT>`,
