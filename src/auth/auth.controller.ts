@@ -5,6 +5,7 @@ import { AuthService } from './auth.service';
 import { Token } from './dto/create-auth.dto';
 import { Response } from 'express';
 import { Cookies } from 'src/decorators/cookies';
+import { LoginUserDto } from 'src/users/dto/login-user.dto';
 
 @ApiTags('Authorization')
 @Controller('auth')
@@ -15,7 +16,7 @@ export class AuthController {
   @ApiResponse({ status: 200, type: Token })
   @Post('/login')
   async login(
-    @Body() userDto: CreateUserDto,
+    @Body() userDto: LoginUserDto,
     @Res({ passthrough: true }) response: Response,
   ) {
     const token = await this.authService.login(userDto);
