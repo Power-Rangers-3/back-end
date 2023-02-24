@@ -24,31 +24,18 @@ import { RolesGuard } from 'src/auth/roles.guard';
 import { AddRoleDto } from './dto/add-role.dto';
 import { JwtAuthGuard } from './../auth/jwt-auth.guard';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { NewPassword } from './dto/refresh-password.dto';
 
 @ApiTags('Users')
 @Controller('users')
 export class UsersController {
   constructor(private userService: UsersService) {}
 
-  @ApiOperation({ summary: 'creating user' })
-  @ApiResponse({ status: 200, type: User })
-  @Post()
-  create(@Body() userDto: CreateUserDto) {
-    return this.userService.createUser(userDto);
-  }
-
   @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'get information about user' })
   @Get('/info')
-  gettest(@Headers('Authorization') token: string) {
+  getInfo(@Headers('Authorization') token: string) {
     return this.userService.getUserInfo(token);
-  }
-
-  @ApiOperation({ summary: 'getting all users' })
-  @ApiResponse({ status: 200, type: [User] })
-  @Get()
-  getAll() {
-    return this.userService.getALlUsers();
   }
 
   @ApiOperation({ summary: 'add one more role for user / only for admin' })
@@ -58,6 +45,11 @@ export class UsersController {
   @Post('/role')
   addRole(@Body() dto: AddRoleDto) {
     return this.userService.addRole(dto);
+  }
+
+  @Post('/refresh-password')
+  refreshPassword(@Body() dto: NewPassword) {
+    return this.userService.refreshPassword(dto);
   }
 
   @ApiBearerAuth()
