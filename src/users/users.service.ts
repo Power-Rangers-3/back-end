@@ -37,9 +37,8 @@ export class UsersService {
     }
   }
 
-  async getUserInfo(token: string) {
-    const userToken = token.split(' ')[1];
-    const user = this.jwtService.verify(userToken);
+  async getUserInfo(email: string) {
+    const user = await this.getUserByEmail(email);
     return user;
   }
 

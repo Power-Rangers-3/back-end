@@ -23,7 +23,7 @@ export class Role extends Model<Role, RoleCreationAttr> {
     autoIncrement: true,
     primaryKey: true,
   })
-  id: number;
+  id: string;
 
   @ApiProperty({
     example: 'ADMIN/USER/MANAGER',

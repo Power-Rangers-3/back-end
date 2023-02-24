@@ -21,5 +21,5 @@ export class SaveFileDto {
   url: string;
 
   @IsNumber()
-  userId: number;
+  userId: string;
 }

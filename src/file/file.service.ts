@@ -12,7 +12,7 @@ export class FileService {
 
   async uploadFile(
     file: Express.Multer.File,
-    id: number,
+    id: string,
   ): Promise<SaveFileDto> {
     const uploadFolder = `${process.cwd()}/uploads`;
     await ensureDir(uploadFolder);

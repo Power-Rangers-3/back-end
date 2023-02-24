@@ -25,7 +25,7 @@ export class User extends Model<User, UserCreationAttr> {
     autoIncrement: true,
     primaryKey: true,
   })
-  id: number;
+  id: string;
 
   @ApiProperty({
     example: 'myemail@gmail.com',
