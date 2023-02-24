@@ -8,6 +8,9 @@ import * as bcrypt from 'bcryptjs';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { JwtService } from '@nestjs/jwt';
 import { NewPassword } from './dto/refresh-password.dto';
+import { RefreshPasswordRequest } from './dto/refresh-password-request.dto';
+import { SentMessageInfo } from 'nodemailer';
+import { EmailService } from './helpers/email-service';
 
 @Injectable()
 export class UsersService {
@@ -42,6 +45,35 @@ export class UsersService {
 
   async getUserInfo(email: string) {
     const user = await this.getUserByEmail(email);
+  async refreshPasswordRequest(dto: RefreshPasswordRequest) {
+    let correctMail = '';
+    try {
+      const mail = (await this.getUserByEmail(dto.email)).email;
+      correctMail = mail ? mail : "There is no such email";
+      const emailConfig: SentMessageInfo = {
+        host: 'smtp.gmail.com',
+        port: 465,
+        secure: true,
+        auth: {
+          user: 'power.rangers.backend@gmail.com',
+          password: 'zqYS9fK4mLyw4Xn',
+        },
+      }
+      const emailService = new EmailService('https://your-app.com', emailConfig);
+      await emailService.sendPasswordResetEmail(dto.email, '123456');
+
+
+    } catch (err) {
+      console.log(err);
+      correctMail = "There is no such email";
+    }
+
+    return correctMail;
+  }
+
+  async getUserInfo(token: string) {
+    const userToken = token.split(' ')[1];
+    const user = this.jwtService.verify(userToken);
     return user;
   }
 
