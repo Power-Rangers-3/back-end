@@ -22,9 +22,10 @@ import { User } from './user.models';
 import { Roles } from 'src/auth/roles-auth.decorator';
 import { RolesGuard } from 'src/auth/roles.guard';
 import { AddRoleDto } from './dto/add-role.dto';
-import { JwtAuthGuard } from './../auth/jwt-auth.guard';
+import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { NewPassword } from './dto/refresh-password.dto';
+import { RefreshPasswordRequest } from './dto/refresh-password-request.dto';
 
 @ApiTags('Users')
 @Controller('users')
@@ -51,6 +52,18 @@ export class UsersController {
   refreshPassword(@Body() dto: NewPassword) {
     return this.userService.refreshPassword(dto);
   }
+
+  @ApiOperation({ summary: 'send address to get email' })
+  @ApiResponse({ status: 200 })
+  @Post('/refresh-password-request')
+  refreshPasswordRequestMail(@Body() dto: RefreshPasswordRequest) {
+    return this.userService.refreshPasswordRequest(dto);
+  }
+
+  // @Post('/refresh-password-answer-code')
+  // refreshPasswordAnswerCode(@Body() dto: NewPassword) {
+  //   return this.userService.refreshPassword(dto);
+  // }
 
   @ApiBearerAuth()
   @ApiOperation({ summary: 'update user data' })
