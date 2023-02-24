@@ -29,12 +29,15 @@ export class UsersService {
 
   async refreshPassword(dto: NewPassword) {
     const user = await this.getUserByEmail(dto.email);
-    const passwordEquals = await bcrypt.compare(dto.password, user.password);
-
-    if (user && passwordEquals) {
-      const hashPassword: string = await bcrypt.hash(dto.newPassword, 5);
-      user.password = hashPassword;
+    if (!user) {
+      throw new HttpException('User is not found', HttpStatus.NOT_FOUND);
     }
+    const passwordEquals = await bcrypt.compare(dto.password, user.password);
+    if (!passwordEquals) {
+      throw new HttpException('Incorrect password', HttpStatus.NOT_FOUND);
+    }
+    const hashPassword: string = await bcrypt.hash(dto.newPassword, 5);
+    user.password = hashPassword;
   }
 
   async getUserInfo(email: string) {
