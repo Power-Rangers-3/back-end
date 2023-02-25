@@ -53,9 +53,13 @@ export class UsersController {
   @ApiOperation({ summary: 'update user password in personal account' })
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
+  @ApiResponse({ status: 200, description: 'success' })
   @Post('/refresh-password')
-  refreshPassword(@Body() dto: NewPassword) {
-    return this.userService.refreshPassword(dto);
+  refreshPassword(
+    @Body() dto: NewPassword,
+    @CurrentUser('email') email: User['email']
+    ) {
+    return this.userService.refreshPassword(dto, email);
   }
 
   @ApiBearerAuth()
