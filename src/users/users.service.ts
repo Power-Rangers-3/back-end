@@ -9,8 +9,9 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { JwtService } from '@nestjs/jwt';
 import { NewPassword } from './dto/refresh-password.dto';
 import { RefreshPasswordRequest } from './dto/refresh-password-request.dto';
-import { SentMessageInfo } from 'nodemailer';
+// import { SentMessageInfo } from 'nodemailer';
 import { EmailService } from './helpers/email-service';
+import * as nodemailer from 'nodemailer';
 
 @Injectable()
 export class UsersService {
@@ -43,29 +44,45 @@ export class UsersService {
     user.password = hashPassword;
   }
 
-  async getUserInfo(email: string) {
-    const user = await this.getUserByEmail(email);
   async refreshPasswordRequest(dto: RefreshPasswordRequest) {
     let correctMail = '';
     try {
-      const mail = (await this.getUserByEmail(dto.email)).email;
-      correctMail = mail ? mail : "There is no such email";
-      const emailConfig: SentMessageInfo = {
-        host: 'smtp.gmail.com',
+      const mail = await this.getUserByEmail(dto.email);
+      correctMail = mail.email ? mail.email : "There is not such email 001";
+      // console.log(`001 ${correctMail}`);
+      const emailConfig: nodemailer.SentMessageInfo = {
+        host: 'smtp.mail.yahoo.com',
         port: 465,
-        secure: true,
+        secure: false,
+        // Port: 465 or 587
+        // port: 465,
+        // SSL: true,
+        // Authentication: true,
         auth: {
-          user: 'power.rangers.backend@gmail.com',
-          password: 'zqYS9fK4mLyw4Xn',
+          type: 'login',
+          user: 'power.rangersbackend@yahoo.com',
+          password: 'BfBfSCHPrsPLhb4',
+
+          // host: 'sandbox.smtp.mailtrap.io',
+          // port: 2525,
+          // secure: true,
+          // auth: {
+          //   user: 'feb24e4289814c',
+          //   password: '6f00d90273cb93',
+
+        // service: 'gmail',
+        // auth: {
+        //   user: 'power.rangers.backend@gmail.com',
+        //   pass: 'zqYS9fK4mLyw4Xn',
         },
+
       }
+      // console.log(emailConfig);
       const emailService = new EmailService('https://your-app.com', emailConfig);
       await emailService.sendPasswordResetEmail(dto.email, '123456');
-
-
     } catch (err) {
       console.log(err);
-      correctMail = "There is no such email";
+      correctMail = "There is no such email 002";
     }
 
     return correctMail;

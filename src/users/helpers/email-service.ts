@@ -1,10 +1,12 @@
-import nodemailer, { SentMessageInfo }  from 'nodemailer';
+// import nodemailer  from 'nodemailer';
+import * as nodemailer from 'nodemailer';
 
 export class EmailService {
   private readonly transporter: nodemailer.Transporter;
   private readonly baseUrl: string;
 
-  constructor(baseUrl: string, emailConfig: SentMessageInfo) {
+  constructor(baseUrl: string, emailConfig: nodemailer.SentMessageInfo) {
+    // console.log(emailConfig);
     this.transporter = nodemailer.createTransport(emailConfig);
     this.baseUrl = baseUrl;
   }
