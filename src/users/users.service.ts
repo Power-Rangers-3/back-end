@@ -41,7 +41,7 @@ export class UsersService {
     }
     const hashPassword: string = await bcrypt.hash(dto.newPassword, 5);
     await user.update({ password: hashPassword });
-    return 'success';
+    return { message: 'success' };
   }
 
   async getUserInfo(email: string) {
