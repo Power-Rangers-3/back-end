@@ -25,6 +25,7 @@ import { JwtAuthGuard } from './../auth/jwt-auth.guard';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { NewPassword } from './dto/refresh-password.dto';
 import { CurrentUser } from 'src/decorators/current-user';
+import { createResponseUserInfo } from 'helpers/response-get-user-info';
 
 @ApiTags('Users')
 @Controller('users')
@@ -33,9 +34,8 @@ export class UsersController {
 
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
-  @ApiResponse({  })
   @ApiOperation({ summary: 'get information about user' })
-  @ApiResponse({ status: 200, type: User })
+  @ApiResponse({ status: 200, type: createResponseUserInfo(User) })
   @Get('/info')
   getInfo(@CurrentUser('email') email: User['email']) {
     return this.userService.getUserInfo(email);
