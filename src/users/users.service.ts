@@ -9,7 +9,6 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { JwtService } from '@nestjs/jwt';
 import { NewPassword } from './dto/refresh-password.dto';
 import { RefreshPasswordRequest } from './dto/refresh-password-request.dto';
-// import { SentMessageInfo } from 'nodemailer';
 import { EmailService } from './helpers/email-service';
 import * as nodemailer from 'nodemailer';
 
@@ -51,29 +50,13 @@ export class UsersService {
       correctMail = mail.email ? mail.email : "There is not such email 001";
       // console.log(`001 ${correctMail}`);
       const emailConfig: nodemailer.SentMessageInfo = {
-        host: 'smtp.mail.yahoo.com',
-        port: 465,
-        secure: false,
-        // Port: 465 or 587
-        // port: 465,
-        // SSL: true,
-        // Authentication: true,
+        host: process.env.SMTP_HOST,
+        port: Number(process.env.SMTP_PORT),
+        secure: process.env.SMTP_SECURE,
         auth: {
           type: 'login',
-          user: 'power.rangersbackend@yahoo.com',
-          password: 'BfBfSCHPrsPLhb4',
-
-          // host: 'sandbox.smtp.mailtrap.io',
-          // port: 2525,
-          // secure: true,
-          // auth: {
-          //   user: 'feb24e4289814c',
-          //   password: '6f00d90273cb93',
-
-        // service: 'gmail',
-        // auth: {
-        //   user: 'power.rangers.backend@gmail.com',
-        //   pass: 'zqYS9fK4mLyw4Xn',
+          user: process.env.SMTP_USER,
+          password: process.env.SMTP_PASSWORD,
         },
 
       }
