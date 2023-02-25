@@ -4,6 +4,7 @@ import {
   Delete,
   Get,
   Headers,
+  HttpCode,
   Param,
   Patch,
   Post,
@@ -52,10 +53,15 @@ export class UsersController {
 
   @ApiOperation({ summary: 'update user password in personal account' })
   @ApiBearerAuth()
+  @HttpCode(200)
   @UseGuards(JwtAuthGuard)
+  @ApiResponse({ status: 200, description: '{ message: "success" }' })
   @Post('/refresh-password')
-  refreshPassword(@Body() dto: NewPassword) {
-    return this.userService.refreshPassword(dto);
+  refreshPassword(
+    @Body() dto: NewPassword,
+    @CurrentUser('email') email: User['email']
+    ) {
+    return this.userService.refreshPassword(dto, email);
   }
 
   @ApiBearerAuth()
