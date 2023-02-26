@@ -11,6 +11,9 @@ import { NewPassword } from './dto/refresh-password.dto';
 import { RefreshPasswordRequest } from './dto/refresh-password-request.dto';
 import { EmailService } from './helpers/email-service';
 import * as nodemailer from 'nodemailer';
+// import * as google from "google-auth-library";
+import { OAuth2Client } from 'google-auth-library';
+// import Oauth2 from 'google-auth-library';
 
 @Injectable()
 export class UsersService {
@@ -43,24 +46,56 @@ export class UsersService {
     user.password = hashPassword;
   }
 
+  // *************************
   async refreshPasswordRequest(dto: RefreshPasswordRequest) {
     let correctMail = '';
     try {
       const mail = await this.getUserByEmail(dto.email);
       correctMail = mail.email ? mail.email : "There is not such email 001";
       // console.log(`001 ${correctMail}`);
-      const emailConfig: nodemailer.SentMessageInfo = {
-        host: process.env.SMTP_HOST,
-        port: Number(process.env.SMTP_PORT),
-        secure: process.env.SMTP_SECURE,
-        auth: {
-          type: 'login',
-          user: process.env.SMTP_USER,
-          password: process.env.SMTP_PASSWORD,
-        },
+      // const emailConfig: nodemailer.SentMessageInfo = {
+      //   host: process.env.SMTP_HOST,
+      //   port: Number(process.env.SMTP_PORT),
+      //   secure: process.env.SMTP_SECURE,
+      //   auth: {
+      //     type: 'login',
+      //     user: process.env.SMTP_USER,
+      //     password: process.env.SMTP_PASSWORD,
+      //   },
+      // }
 
-      }
-      // console.log(emailConfig);
+      // const { Oauth2Client } = google.auth;
+      const oAuth2Client = new OAuth2Client(
+        process.env.CLIENT_ID,
+        process.env.CLIENT_SECRET,
+        process.env.REDIRECT_URI
+      );
+
+      oAuth2Client.setCredentials({
+        refresh_token: process.env.REFRESH_TOKEN,
+      });
+
+      console.log(oAuth2Client);
+
+      const accessToken = async () => {
+        const result = await oAuth2Client.getAccessToken();
+        return result.token;
+      };
+
+      console.log(await accessToken());
+      const emailConfig: nodemailer.SentMessageInfo = {
+        service: "gmail",
+        auth: {
+          type: "OAuth2",
+          user: process.env.GMAIL_USER,
+          accessToken: await accessToken(),
+          clientId: process.env.CLIENT_ID,
+          clientSecret: process.env.CLIENT_SECRET,
+          refreshToken: process.env.REFRESH_TOKEN,
+        },
+      };
+
+      console.log(emailConfig);
       const emailService = new EmailService('https://your-app.com', emailConfig);
       await emailService.sendPasswordResetEmail(dto.email, '123456');
     } catch (err) {
