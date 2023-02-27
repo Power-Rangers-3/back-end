@@ -6,11 +6,16 @@ import { Token } from './dto/create-auth.dto';
 import { Response } from 'express';
 import { Cookies } from 'src/decorators/cookies';
 import { LoginUserDto } from 'src/users/dto/login-user.dto';
+import { CreateRoleDto } from 'src/roles/dto/create-role.dto';
+import { User } from 'src/users/user.models';
+import { createResponseUserInfo } from 'helpers/response-get-user-info';
 
 @ApiTags('Authorization')
 @Controller('auth')
 export class AuthController {
-  constructor(private authService: AuthService) {}
+  constructor(
+    private authService: AuthService,
+    ) {}
 
   @ApiOperation({ summary: 'trying to login' })
   @ApiResponse({ status: 200, type: Token })
@@ -57,5 +62,12 @@ export class AuthController {
       secure: true,
     });
     return { value: token.accessToken };
+  }
+
+  @ApiOperation({ summary: 'creating SuperAdmin (for development)' })
+  @ApiResponse({ status: 200, type: createResponseUserInfo(User)})
+  @Post('/superadmin')
+  async createUserWithRoleSuperAdmin(userAdmin: CreateUserDto, roleAdmin: CreateRoleDto) {
+    return await this.authService.createUserSuperAdmin(userAdmin, roleAdmin)
   }
 }

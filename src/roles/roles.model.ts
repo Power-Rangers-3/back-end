@@ -1,17 +1,22 @@
 import {
-  BelongsToMany,
   Column,
   DataType,
+  HasMany,
   Model,
   Table,
 } from 'sequelize-typescript';
 import { ApiProperty } from '@nestjs/swagger';
 import { User } from '../users/user.models';
-import { UserRoles } from './user-roles.model';
 
 interface RoleCreationAttr {
-  value: string;
+  role: UserRole;
   description: string;
+}
+
+export enum UserRole {
+  SuperAdmin = 'SuperAdmin',
+  Admin = 'Admin',
+  User = 'User',
 }
 
 @Table({ tableName: 'roles' })
@@ -26,19 +31,19 @@ export class Role extends Model<Role, RoleCreationAttr> {
   id: string;
 
   @ApiProperty({
-    example: 'ADMIN/USER/MANAGER',
-    description: 'uniq roles for users',
+    example: 'SuperAdmin/Admin/User',
+    description: 'uniq role for users',
   })
   @Column({ type: DataType.STRING, unique: true, allowNull: false })
-  value: string;
+  role: UserRole;
 
   @ApiProperty({
-    example: 'Administrator/basic user/some kind of manager',
+    example: 'SuperAdministrator/basic User/some kind of Administrator',
     description: 'description of role',
   })
   @Column({ type: DataType.STRING, allowNull: false })
   description: string;
 
-  @BelongsToMany(() => User, () => UserRoles)
+  @HasMany(() => User)
   users: User[];
 }

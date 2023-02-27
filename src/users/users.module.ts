@@ -4,7 +4,6 @@ import { UsersService } from './users.service';
 import { SequelizeModule } from '@nestjs/sequelize';
 import { User } from './user.models';
 import { Role } from '../roles/roles.model';
-import { UserRoles } from '../roles/user-roles.model';
 import { RolesModule } from '../roles/roles.module';
 import { AuthModule } from '../auth/auth.module';
 import { JwtModule } from '@nestjs/jwt';
@@ -13,7 +12,7 @@ import { JwtModule } from '@nestjs/jwt';
   controllers: [UsersController],
   providers: [UsersService],
   imports: [
-    SequelizeModule.forFeature([User, Role, UserRoles]),
+    SequelizeModule.forFeature([User, Role]),
     RolesModule,
     forwardRef(() => AuthModule),
     JwtModule.register({
