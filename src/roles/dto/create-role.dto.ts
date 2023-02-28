@@ -1,4 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { IsEnum, IsNotEmpty } from 'class-validator';
 import { UserRole } from '../roles.model';
 
 export class CreateRoleDto {
@@ -6,11 +7,14 @@ export class CreateRoleDto {
     example: 'SuperAdmin/Admin/User',
     description: 'role for user',
   })
+  @IsNotEmpty()
+  @IsEnum(UserRole)
   readonly role: UserRole;
 
   @ApiProperty({
     example: 'this is the most powerful maan in the world',
     description: 'user role description',
   })
+  @IsNotEmpty()
   readonly description: string;
 }

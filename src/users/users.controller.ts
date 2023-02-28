@@ -43,10 +43,11 @@ export class UsersController {
   }
 
   @ApiOperation({ summary: 'add role for user / only for SuperAdmin' })
-  @ApiResponse({ status: 200 })
   @ApiBearerAuth()
   @Role(UserRole.SuperAdmin)
   @UseGuards(RolesGuard)
+  @HttpCode(200)
+  @ApiResponse({ status: 200, type: AddRoleDto })
   @Post('/role')
   addRole(@Body() dto: AddRoleDto) {
     return this.userService.addRole(dto);

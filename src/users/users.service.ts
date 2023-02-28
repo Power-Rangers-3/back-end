@@ -67,7 +67,10 @@ export class UsersService {
     if (!role) {
       throw new HttpException('Role not found', HttpStatus.NOT_FOUND);
     }
-    await user.$add('role', role.id);
+    await user.update({
+      idRole: role.id,
+      role: role,
+    })
     return dto;
   }
 
