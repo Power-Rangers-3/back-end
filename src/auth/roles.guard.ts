@@ -22,11 +22,11 @@ export class RolesGuard implements CanActivate {
     context: ExecutionContext,
   ): boolean | Promise<boolean> | Observable<boolean> {
     try {
-      const requiredRole = this.reflector.getAllAndOverride<string>(
+      const requiredRoles = this.reflector.getAllAndOverride<string>(
         ROLE_KEY,
         [context.getHandler(), context.getClass()],
       );
-      if (!requiredRole) {
+      if (!requiredRoles) {
         return true;
       }
       const req = context.switchToHttp().getRequest();
@@ -37,8 +37,7 @@ export class RolesGuard implements CanActivate {
       }
       const user = this.jwtService.verify(token);
       req.user = user;
-
-      return user.role.role === requiredRole;
+      return requiredRoles.includes(user.role.role);
     } catch (e) { 
       throw new HttpException('Not enough power, user', HttpStatus.FORBIDDEN);
     }

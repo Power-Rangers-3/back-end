@@ -3,11 +3,11 @@ import { UserRole } from 'src/roles/roles.model';
 
 export class AddRoleDto {
   @ApiProperty({
-    example: 'Moderator',
-    description: 'uniq or multiple role for users',
+    example: 'SuperAdmin',
+    description: 'role for user',
   })
   readonly role: UserRole;
   
-  @ApiProperty({ example: '1', description: 'uniq users id' })
+  @ApiProperty({ example: '2', description: 'uniq users id' })
   readonly userId: string;
 }

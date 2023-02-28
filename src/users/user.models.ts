@@ -57,10 +57,10 @@ export class User extends Model<User, UserCreationAttr> {
   @Column({ type: DataType.STRING, allowNull: true })
   phone: string;
 
-  @ApiProperty({ example: '1', description: 'non uniq id role' })
+  @ApiProperty({ example: '1', description: 'id role' })
   @ForeignKey(() => Role)
-  @Column({ type: DataType.INTEGER, allowNull: true })
-  roleId: string;
+  @Column({ type: DataType.INTEGER })
+  idRole: string;
 
   @BelongsTo(() => Role)
   role: Role;

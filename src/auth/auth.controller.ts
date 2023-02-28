@@ -67,7 +67,7 @@ export class AuthController {
   @ApiOperation({ summary: 'creating SuperAdmin (for development)' })
   @ApiResponse({ status: 200, type: createResponseUserInfo(User)})
   @Post('/superadmin')
-  async createUserWithRoleSuperAdmin(userAdmin: CreateUserDto, roleAdmin: CreateRoleDto) {
+  async createUserWithRoleSuperAdmin(userAdmin: CreateUserDto, roleAdmin: CreateRoleDto): Promise<User> {
     return await this.authService.createUserSuperAdmin(userAdmin, roleAdmin)
   }
 }

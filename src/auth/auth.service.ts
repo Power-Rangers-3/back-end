@@ -78,7 +78,7 @@ export class AuthService {
     return user;
   }
 
-  async createUserSuperAdmin(userSuperAdminData: CreateUserDto, roleSuperAdmin: CreateRoleDto) {
+  async createUserSuperAdmin(userSuperAdminData: CreateUserDto, roleSuperAdmin: CreateRoleDto): Promise<User> {
     roleSuperAdmin = {
       role: UserRole.SuperAdmin,
       description: 'Create and assign admin roles'
@@ -94,7 +94,7 @@ export class AuthService {
     await this.registration(userSuperAdminData)
     const user = await this.userService.getUserByEmail(userSuperAdminData.email)
     await user.update({
-      roleId: role.id,
+      idRole: role.id,
       role: role,
     })
     return user
