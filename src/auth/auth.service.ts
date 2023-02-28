@@ -83,12 +83,6 @@ export class AuthService {
       role: UserRole.SuperAdmin,
       description: 'Create and assign admin roles'
     }
-    if (await this.rolesService.getRoleByValue(UserRole.SuperAdmin)) {
-      throw new HttpException(
-        'SuperAdmin already exist',
-        HttpStatus.BAD_REQUEST,
-      );
-    }
     const role = await this.rolesService.createRole(roleSuperAdmin)
     userSuperAdminData = userSuperAdmin;
     await this.registration(userSuperAdminData)

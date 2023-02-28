@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { CreateRoleDto } from './dto/create-role.dto';
 import { InjectModel } from '@nestjs/sequelize';
 import { Role, UserRole } from './roles.model';
@@ -8,6 +8,18 @@ export class RolesService {
   constructor(@InjectModel(Role) private roleRepository: typeof Role) {}
 
   async createRole(dto: CreateRoleDto): Promise<Role> {
+    if (!Object.values(UserRole).includes(dto.role)) {
+      throw new HttpException(
+      `Role can be ${Object.values(UserRole)}`,
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+    if (await this.getRoleByValue(dto.role)) {
+      throw new HttpException(
+        'Role already exist',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
     const role = await this.roleRepository.create(dto);
     return role;
   }

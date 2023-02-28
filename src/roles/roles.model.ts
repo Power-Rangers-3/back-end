@@ -34,7 +34,12 @@ export class Role extends Model<Role, RoleCreationAttr> {
     example: 'SuperAdmin/Admin/User',
     description: 'uniq role for users',
   })
-  @Column({ type: DataType.STRING, unique: true, allowNull: false })
+  @Column({
+    type: DataType.ENUM,
+    values: Object.values(UserRole),
+    unique: true,
+    allowNull: false,
+  })
   role: UserRole;
 
   @ApiProperty({
