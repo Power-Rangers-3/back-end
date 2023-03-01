@@ -2,6 +2,7 @@
 # Stack
 - [nest.js](https://docs.nestjs.com/)
 - [swagger](https://swagger.io/docs/)
+- [sequelize](https://sequelize.org/docs/v6/)
 - [docker](https://docs.docker.com/)
 - [pgAdmin](https://www.pgadmin.org/)
 

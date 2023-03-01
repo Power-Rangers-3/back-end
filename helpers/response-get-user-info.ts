@@ -15,10 +15,10 @@ export function createResponseUserInfo(baseClass){
     updatedAt: string;
 
     @ApiProperty({
-        example: '[admin]',
+        example: '{ "id": 1, "role": "SuperAdmin", "description": "Create and assign admin roles" }',
         description: 'non uniq role',
     })
-    roles: [string];
+    role: {};
 
     @ApiProperty({
         example: 'kdjfht75525hkE8HGS.jpg',

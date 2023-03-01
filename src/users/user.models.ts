@@ -1,14 +1,14 @@
 import {
-  BelongsToMany,
+  BelongsTo,
   Column,
   DataType,
+  ForeignKey,
   HasOne,
   Model,
   Table,
 } from 'sequelize-typescript';
 import { ApiProperty } from '@nestjs/swagger';
 import { Role } from 'src/roles/roles.model';
-import { UserRoles } from 'src/roles/user-roles.model';
 import { File } from '../file/file.model';
 
 interface UserCreationAttr {
@@ -57,8 +57,13 @@ export class User extends Model<User, UserCreationAttr> {
   @Column({ type: DataType.STRING, allowNull: true })
   phone: string;
 
-  @BelongsToMany(() => Role, () => UserRoles)
-  roles: Role[];
+  @ApiProperty({ example: '1', description: 'id role' })
+  @ForeignKey(() => Role)
+  @Column({ type: DataType.INTEGER })
+  idRole: string;
+
+  @BelongsTo(() => Role)
+  role: Role;
 
   @HasOne(() => File)
   file?: File[];

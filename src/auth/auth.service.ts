@@ -10,12 +10,17 @@ import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcryptjs';
 import { User } from '../users/user.models';
 import { LoginUserDto } from 'src/users/dto/login-user.dto';
+import { userSuperAdmin } from 'helpers/admin-data';
+import { CreateRoleDto } from 'src/roles/dto/create-role.dto';
+import { RolesService } from 'src/roles/roles.service';
+import { UserRole } from 'src/roles/roles.model';
 
 @Injectable()
 export class AuthService {
   constructor(
     private userService: UsersService,
     private jwtService: JwtService,
+    private rolesService: RolesService,
   ) {}
 
   async login(userDto: LoginUserDto) {
@@ -48,7 +53,7 @@ export class AuthService {
     const payload = {
       email: user.email,
       id: user.id,
-      roles: user.roles,
+      role: user.role,
     };
     return {
       accessToken: this.jwtService.sign(payload, { expiresIn: '24h' }),
@@ -71,5 +76,21 @@ export class AuthService {
   private async validateRefreshToken(token: string) {
     const user = this.jwtService.verify(token);
     return user;
+  }
+
+  async createUserSuperAdmin(userSuperAdminData: CreateUserDto, roleSuperAdmin: CreateRoleDto): Promise<User> {
+    roleSuperAdmin = {
+      role: UserRole.SuperAdmin,
+      description: 'Create and assign admin roles'
+    }
+    const role = await this.rolesService.createRole(roleSuperAdmin)
+    userSuperAdminData = userSuperAdmin;
+    await this.registration(userSuperAdminData)
+    const user = await this.userService.getUserByEmail(userSuperAdminData.email)
+    await user.update({
+      idRole: role.id,
+      role: role,
+    })
+    return user
   }
 }

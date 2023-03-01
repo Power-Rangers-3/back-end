@@ -8,6 +8,7 @@ import * as bcrypt from 'bcryptjs';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { JwtService } from '@nestjs/jwt';
 import { NewPassword } from './dto/refresh-password.dto';
+import { UserRole } from 'src/roles/roles.model';
 
 @Injectable()
 export class UsersService {
@@ -18,11 +19,11 @@ export class UsersService {
   ) {}
 
   async createUser(dto: CreateUserDto) {
-    const user = await this.userRepository.create(dto);
-    const role = await this.roleService.getRoleByValue('USER');
+    const user = await this.userRepository.create(dto);  
+    const role = await this.roleService.getRoleByValue(UserRole.User);
     if (role) {
-      await user.$set('roles', [role.id]);
-      user.roles = [role];
+      await user.$set('role', role.id);
+      user.role = role;
     }
     return user;
   }
@@ -59,12 +60,18 @@ export class UsersService {
 
   async addRole(dto: AddRoleDto) {
     const user = await this.userRepository.findByPk(dto.userId);
-    const role = await this.roleService.getRoleByValue(dto.value);
-    if (role && user) {
-      await user.$add('role', role.id);
-      return dto;
+    if (!user) {
+      throw new HttpException('User not found', HttpStatus.NOT_FOUND);
     }
-    throw new HttpException('User or role do not found', HttpStatus.NOT_FOUND);
+    const role = await this.roleService.getRoleByValue(dto.role);
+    if (!role) {
+      throw new HttpException('Role not found', HttpStatus.NOT_FOUND);
+    }
+    await user.update({
+      idRole: role.id,
+      role: role,
+    })
+    return dto;
   }
 
   async updateUser(id: string, userDto: Partial<UpdateUserDto>) {

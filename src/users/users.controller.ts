@@ -3,7 +3,6 @@ import {
   Controller,
   Delete,
   Get,
-  Headers,
   HttpCode,
   Param,
   Patch,
@@ -19,7 +18,7 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { User } from './user.models';
-import { Roles } from 'src/auth/roles-auth.decorator';
+import { Role } from 'src/auth/roles-auth.decorator';
 import { RolesGuard } from 'src/auth/roles.guard';
 import { AddRoleDto } from './dto/add-role.dto';
 import { JwtAuthGuard } from './../auth/jwt-auth.guard';
@@ -27,6 +26,7 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { NewPassword } from './dto/refresh-password.dto';
 import { CurrentUser } from 'src/decorators/current-user';
 import { createResponseUserInfo } from 'helpers/response-get-user-info';
+import { UserRole } from 'src/roles/roles.model';
 
 @ApiTags('Users')
 @Controller('users')
@@ -42,10 +42,12 @@ export class UsersController {
     return this.userService.getUserInfo(email);
   }
 
-  @ApiOperation({ summary: 'add one more role for user / only for admin' })
-  @ApiResponse({ status: 200 })
-  @Roles('ADMIN')
+  @ApiOperation({ summary: 'add role for user / only for SuperAdmin' })
+  @ApiBearerAuth()
+  @Role(UserRole.SuperAdmin)
   @UseGuards(RolesGuard)
+  @HttpCode(200)
+  @ApiResponse({ status: 200, type: AddRoleDto })
   @Post('/role')
   addRole(@Body() dto: AddRoleDto) {
     return this.userService.addRole(dto);
