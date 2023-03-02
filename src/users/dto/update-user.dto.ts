@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsEmail, IsString, Length } from 'class-validator';
+import { IsEmail, IsMobilePhone, IsString, IsUrl, Length } from 'class-validator';
 
 export class UpdateUserDto {
   @ApiProperty({
@@ -7,7 +7,6 @@ export class UpdateUserDto {
     description: 'uniq users email',
     required: false,
   })
-  @IsString({ message: 'should be string' })
   @IsEmail({}, { message: 'incorrect email' })
   readonly email: string;
 
@@ -32,6 +31,7 @@ export class UpdateUserDto {
     description: 'user surname',
     required: false,
   })
+  @IsString({ message: 'should be string' })
   readonly fullname: string | null;
 
   @ApiProperty({
@@ -39,6 +39,7 @@ export class UpdateUserDto {
     description: 'user phone',
     required: false,
   })
+  @IsMobilePhone() 
   readonly phone: string | null;
   
   @ApiProperty({
@@ -46,5 +47,6 @@ export class UpdateUserDto {
     description: 'telegram address',
     required: false,
   })
+  @IsUrl()
   readonly telegram: string | null;
 }

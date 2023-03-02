@@ -20,7 +20,6 @@ export class CreateUserDto {
     example: 'myemail@gmail.com',
     description: 'uniq users email',
   })
-  @IsString({ message: 'should be string' })
   @IsEmail({}, { message: 'incorrect email' })
   @IsNotEmpty()
   readonly email: string;

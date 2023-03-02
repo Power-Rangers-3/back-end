@@ -18,11 +18,11 @@ interface UserCreationAttr {
 
 @Table({ tableName: 'users' })
 export class User extends Model<User, UserCreationAttr> {
-  @ApiProperty({ example: '1', description: 'uniq id' })
+  @ApiProperty({ example: '24261d9a-dfa3-4592-a6de-cafef64acea2', description: 'uniq id' })
   @Column({
-    type: DataType.INTEGER,
+    type: DataType.UUID,
+    defaultValue: DataType.UUIDV4,
     unique: true,
-    autoIncrement: true,
     primaryKey: true,
   })
   id: string;
@@ -57,9 +57,9 @@ export class User extends Model<User, UserCreationAttr> {
   @Column({ type: DataType.STRING, allowNull: true })
   phone: string;
 
-  @ApiProperty({ example: '1', description: 'id role' })
+  @ApiProperty({ example: '24261d9a-dfa3-4592-a6de-cafef64acea2', description: 'id role' })
   @ForeignKey(() => Role)
-  @Column({ type: DataType.INTEGER })
+  @Column({ type: DataType.UUID, })
   idRole: string;
 
   @BelongsTo(() => Role)

@@ -21,11 +21,11 @@ export enum UserRole {
 
 @Table({ tableName: 'roles' })
 export class Role extends Model<Role, RoleCreationAttr> {
-  @ApiProperty({ example: '1', description: 'uniq id' })
+  @ApiProperty({ example: '24261d9a-dfa3-4592-a6de-cafef64acea2', description: 'uniq id' })
   @Column({
-    type: DataType.INTEGER,
+    type: DataType.UUID,
+    defaultValue: DataType.UUIDV4,
     unique: true,
-    autoIncrement: true,
     primaryKey: true,
   })
   id: string;
