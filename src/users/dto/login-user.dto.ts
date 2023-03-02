@@ -7,7 +7,6 @@ export class LoginUserDto {
         description: 'uniq users email',
       })
       @IsNotEmpty()
-      @IsString({ message: 'should be string' })
       @IsEmail({}, { message: 'incorrect email' })
       readonly email: string;
     

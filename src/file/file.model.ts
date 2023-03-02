@@ -13,7 +13,7 @@ import { User } from 'src/users/user.models';
 export class File extends Model<File> {
   @ApiProperty({ example: '1', description: 'uniq id' })
   @Column({
-    type: DataType.INTEGER,
+    type: DataType.STRING,
     unique: true,
     autoIncrement: true,
     primaryKey: true,
@@ -49,7 +49,7 @@ export class File extends Model<File> {
 
   @ForeignKey(() => User)
   @Column({
-    type: DataType.INTEGER,
+    type: DataType.STRING,
     allowNull: false,
   })
   userId: string;

@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNumber, IsString } from 'class-validator';
+import { IsNumberString, IsString } from 'class-validator';
 
 export class SaveFileDto {
   @ApiProperty({ example: '1564314090_3.jpeg', description: 'file name' })
@@ -20,6 +20,10 @@ export class SaveFileDto {
   @IsString({ message: 'should be string' })
   url: string;
 
-  @IsNumber()
+  @ApiProperty({
+    example: '1',
+    description: 'user id',
+  })
+  @IsNumberString()
   userId: string;
 }
