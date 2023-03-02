@@ -23,7 +23,7 @@ export enum UserRole {
 export class Role extends Model<Role, RoleCreationAttr> {
   @ApiProperty({ example: '1', description: 'uniq id' })
   @Column({
-    type: DataType.INTEGER,
+    type: DataType.BIGINT,
     unique: true,
     autoIncrement: true,
     primaryKey: true,

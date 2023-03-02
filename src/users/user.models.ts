@@ -20,7 +20,7 @@ interface UserCreationAttr {
 export class User extends Model<User, UserCreationAttr> {
   @ApiProperty({ example: '1', description: 'uniq id' })
   @Column({
-    type: DataType.INTEGER,
+    type: DataType.BIGINT,
     unique: true,
     autoIncrement: true,
     primaryKey: true,
@@ -59,7 +59,7 @@ export class User extends Model<User, UserCreationAttr> {
 
   @ApiProperty({ example: '1', description: 'id role' })
   @ForeignKey(() => Role)
-  @Column({ type: DataType.INTEGER })
+  @Column({ type: DataType.BIGINT })
   idRole: string;
 
   @BelongsTo(() => Role)
