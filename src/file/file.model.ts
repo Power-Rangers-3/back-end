@@ -11,11 +11,11 @@ import { User } from 'src/users/user.models';
 
 @Table({ tableName: 'files' })
 export class File extends Model<File> {
-  @ApiProperty({ example: '1', description: 'uniq id' })
+  @ApiProperty({ example: '24261d9a-dfa3-4592-a6de-cafef64acea2', description: 'uniq id' })
   @Column({
-    type: DataType.BIGINT,
+    type: DataType.UUID,
+    defaultValue: DataType.UUIDV4,
     unique: true,
-    autoIncrement: true,
     primaryKey: true,
   })
   id: string;
@@ -49,7 +49,7 @@ export class File extends Model<File> {
 
   @ForeignKey(() => User)
   @Column({
-    type: DataType.BIGINT,
+    type: DataType.UUID,
     allowNull: false,
   })
   userId: string;
