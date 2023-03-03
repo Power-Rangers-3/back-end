@@ -31,14 +31,14 @@ export class UsersService {
   async refreshPassword(dto: NewPassword, email: string) {
     const user = await this.getUserByEmail(email);
     if (!user) {
-      throw new HttpException('User is not found', HttpStatus.NOT_FOUND);
+      throw new HttpException('User is not found', HttpStatus.UNAUTHORIZED);
     }
     if (email !== dto.email) {
-      throw new HttpException('Incorrect email', HttpStatus.NOT_FOUND);
+      throw new HttpException('Incorrect email', HttpStatus.UNAUTHORIZED);
     }
     const passwordEquals = await bcrypt.compare(dto.password, user.password);
     if (!passwordEquals) {
-      throw new HttpException('Incorrect password', HttpStatus.NOT_FOUND);
+      throw new HttpException('Incorrect password', HttpStatus.UNAUTHORIZED);
     }
     const hashPassword: string = await bcrypt.hash(dto.newPassword, 5);
     await user.update({ password: hashPassword });
