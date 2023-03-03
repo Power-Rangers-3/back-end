@@ -10,10 +10,9 @@ import { JwtService } from '@nestjs/jwt';
 import { NewPassword } from './dto/refresh-password.dto';
 import { RefreshPasswordRequest } from './dto/refresh-password-request.dto';
 import { EmailService } from './helpers/email-service';
-import * as nodemailer from 'nodemailer';
-// import * as google from "google-auth-library";
-import { OAuth2Client } from 'google-auth-library';
-// import Oauth2 from 'google-auth-library';
+// import * as nodemailer from 'nodemailer';
+import nodemailer from 'nodemailer';
+import { google } from 'googleapis';
 
 @Injectable()
 export class UsersService {
@@ -65,7 +64,7 @@ export class UsersService {
       // }
 
       // const { Oauth2Client } = google.auth;
-      const oAuth2Client = new OAuth2Client(
+      const oAuth2Client = new google.auth.OAuth2(
         process.env.CLIENT_ID,
         process.env.CLIENT_SECRET,
         process.env.REDIRECT_URI
@@ -91,7 +90,10 @@ export class UsersService {
           accessToken: await accessToken(),
           clientId: process.env.CLIENT_ID,
           clientSecret: process.env.CLIENT_SECRET,
-          refreshToken: process.env.REFRESH_TOKEN,
+          // refreshToken: process.env.REFRESH_TOKEN,
+        },
+        tls: {
+          rejectUnauthorized: false,
         },
       };
 
