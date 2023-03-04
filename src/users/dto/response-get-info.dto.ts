@@ -1,7 +1,9 @@
-import { ApiProperty } from "@nestjs/swagger"
+import { ApiProperty, OmitType } from '@nestjs/swagger';
+import { User } from 'src/users/user.models';
 
-export function createResponseUserInfo(baseClass){
-  class UserInfo extends baseClass {
+export const fields = ['password']
+
+export class ResponseGetInfoDto extends OmitType(User, fields as readonly (keyof User)[]) {
     @ApiProperty({
         example: '2023-02-24T21:04:36.879Z',
         description: 'non uniq date',
@@ -25,7 +27,4 @@ export function createResponseUserInfo(baseClass){
         description: 'non uniq file',
     })
     file: string;
-  }
-
-  return UserInfo
 }

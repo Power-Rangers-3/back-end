@@ -25,8 +25,8 @@ import { JwtAuthGuard } from './../auth/jwt-auth.guard';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { NewPassword } from './dto/refresh-password.dto';
 import { CurrentUser } from 'src/decorators/current-user';
-import { createResponseUserInfo } from 'helpers/response-get-user-info';
 import { UserRole } from 'src/roles/roles.model';
+import { ResponseGetInfoDto } from './dto/response-get-info.dto';
 
 @ApiTags('Users')
 @Controller('users')
@@ -36,7 +36,7 @@ export class UsersController {
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'get information about user' })
-  @ApiResponse({ status: 200, type: createResponseUserInfo(User) })
+  @ApiResponse({ status: 200, type: ResponseGetInfoDto })
   @Get('/info')
   getInfo(@CurrentUser('email') email: User['email']): Promise<Partial<User>> {
     return this.userService.getUserInfo(email);
