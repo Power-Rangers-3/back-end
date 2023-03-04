@@ -14,13 +14,13 @@ export class RolesController {
   @ApiResponse({ status: 200, type: Role })
   @Post()
   create(@Body() dto: CreateRoleDto): Promise<Role> {
-    return this.roleService.createRole(dto);
+    return this.roleService.findOrCreate(dto);
   }
 
   @ApiOperation({ summary: `check if user's role already exist` })
   @ApiResponse({ status: 200, type: [Role] })
   @Get('/:role')
   getByValue(@Param('role') role: UserRole): Promise<Role> {
-    return this.roleService.getRoleByValue(role);
+    return this.roleService.find(role);
   }
 }

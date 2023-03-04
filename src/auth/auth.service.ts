@@ -4,6 +4,7 @@ import {
   Injectable,
   UnauthorizedException,
 } from '@nestjs/common';
+import { pick } from 'lodash';
 import { CreateUserDto } from '../users/dto/create-user.dto';
 import { UsersService } from '../users/users.service';
 import { JwtService } from '@nestjs/jwt';
@@ -11,9 +12,8 @@ import * as bcrypt from 'bcryptjs';
 import { User } from '../users/user.models';
 import { LoginUserDto } from 'src/users/dto/login-user.dto';
 import { userSuperAdmin } from 'helpers/admin-data';
-import { CreateRoleDto } from 'src/roles/dto/create-role.dto';
 import { RolesService } from 'src/roles/roles.service';
-import { UserRole } from 'src/roles/roles.model';
+import { roleAdminData, roleSuperAdminData, roleUserData } from 'helpers/roles';
 
 @Injectable()
 export class AuthService {
@@ -78,19 +78,25 @@ export class AuthService {
     return user;
   }
 
-  async createUserSuperAdmin(userSuperAdminData: CreateUserDto, roleSuperAdmin: CreateRoleDto): Promise<User> {
-    roleSuperAdmin = {
-      role: UserRole.SuperAdmin,
-      description: 'Create and assign admin roles'
-    }
-    const role = await this.rolesService.createRole(roleSuperAdmin)
-    userSuperAdminData = userSuperAdmin;
-    await this.registration(userSuperAdminData)
-    const user = await this.userService.getUserByEmail(userSuperAdminData.email)
-    await user.update({
-      idRole: role.id,
-      role: role,
-    })
-    return user
+  async createRolesAndSuperAdmin(): Promise<User> {
+    const roles = await Promise.all([
+      this.rolesService.findOrCreate(roleSuperAdminData),
+      this.rolesService.findOrCreate(roleAdminData),
+      this.rolesService.findOrCreate(roleUserData),
+    ]);
+    const roleSuperAdmin = roles[0];
+    console.log('roles', roles);
+    
+    await this.registration(userSuperAdmin);
+    const superAdmin = await this.userService.getUserByEmail(userSuperAdmin.email);
+    await superAdmin.update({
+      idRole: roleSuperAdmin.id,
+      role: roleSuperAdmin,
+    });
+    return superAdmin.toJSON();
+  }
+
+  filterResponse(model: User, fields: string[]): Partial<User> {
+    return pick(model, fields)
   }
 }

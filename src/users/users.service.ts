@@ -20,7 +20,7 @@ export class UsersService {
 
   async createUser(dto: CreateUserDto) {
     const user = await this.userRepository.create(dto);  
-    const role = await this.roleService.getRoleByValue(UserRole.User);
+    const role = await this.roleService.find(UserRole.User);
     if (role) {
       await user.$set('role', role.id);
       user.role = role;
@@ -63,7 +63,7 @@ export class UsersService {
     if (!user) {
       throw new HttpException('User not found', HttpStatus.NOT_FOUND);
     }
-    const role = await this.roleService.getRoleByValue(dto.role);
+    const role = await this.roleService.find(dto.role);
     if (!role) {
       throw new HttpException('Role not found', HttpStatus.NOT_FOUND);
     }

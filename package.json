@@ -38,6 +38,7 @@
     "cookie-parser": "^1.4.6",
     "cross-env": "^7.0.3",
     "fs-extra": "^11.1.0",
+    "lodash": "^4.17.21",
     "pg": "^8.8.0",
     "pg-hstore": "^2.3.4",
     "reflect-metadata": "^0.1.13",
