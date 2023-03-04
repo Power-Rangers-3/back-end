@@ -45,9 +45,10 @@ export class UsersService {
     return { message: 'success' };
   }
 
-  async getUserInfo(email: string) {
+  async getUserInfo(email: string): Promise<Partial<User>> {
     const user = await this.getUserByEmail(email);
-    return user;
+    const { password, ...userData } = user.toJSON()
+    return userData;
   }
 
   async getUserByEmail(email: string) {
@@ -74,14 +75,13 @@ export class UsersService {
     return dto;
   }
 
-  async updateUser(id: string, userDto: Partial<UpdateUserDto>) {
-    const user = await this.userRepository.findByPk(+id);
+  async updateUser(id: string, userDto: Partial<UpdateUserDto>): Promise<Partial<UpdateUserDto>> {
+    const user = await this.userRepository.findByPk(id);
     if (!user) throw new HttpException('User not found', HttpStatus.NOT_FOUND);
     if (!userDto) throw new HttpException('No content', HttpStatus.NO_CONTENT);
-    if (userDto.password)
-      userDto.password = await bcrypt.hash(userDto.password, 5);
     await user.update(userDto);
-    return user;
+    const { password, ...userData } = user.toJSON()
+    return userData;
   }
 
   async deleteUserField(id: string, userField: string) {

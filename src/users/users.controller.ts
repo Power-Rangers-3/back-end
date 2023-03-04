@@ -38,7 +38,7 @@ export class UsersController {
   @ApiOperation({ summary: 'get information about user' })
   @ApiResponse({ status: 200, type: createResponseUserInfo(User) })
   @Get('/info')
-  getInfo(@CurrentUser('email') email: User['email']) {
+  getInfo(@CurrentUser('email') email: User['email']): Promise<Partial<User>> {
     return this.userService.getUserInfo(email);
   }
 
@@ -72,7 +72,7 @@ export class UsersController {
   @ApiResponse({ status: 200, type: User })
   @UseGuards(JwtAuthGuard)
   @Patch('/:id/update')
-  update(@Param('id') id: string, @Body() dto: Partial<UpdateUserDto>) {
+  update(@Param('id') id: string, @Body() dto: Partial<UpdateUserDto>): Promise<Partial<UpdateUserDto>> {
     return this.userService.updateUser(id, dto);
   }
 
