@@ -7,22 +7,18 @@ import { Role, UserRole } from './roles.model';
 export class RolesService {
   constructor(@InjectModel(Role) private roleRepository: typeof Role) {}
 
-  async createRole(dto: CreateRoleDto): Promise<Role> {
-    if (await this.getRoleByValue(dto.role)) {
-      throw new HttpException(
-        'Role already exist',
-        HttpStatus.BAD_REQUEST,
-      );
+  async findOrCreate(dto: CreateRoleDto): Promise<Role> {
+    const existingRole = await this.find(dto.role)
+    if (existingRole) {
+      return existingRole;
     }
-    const role = await this.roleRepository.create(dto);
-    return role;
+    return this.roleRepository.create(dto);
   }
 
-  async getRoleByValue(roleValue: UserRole): Promise<Role> {
-    const role = await this.roleRepository.findOne({
+  find(roleValue: UserRole): Promise<Role> {
+    return this.roleRepository.findOne({
       where: { role: roleValue },
       include: { all: true },
     });
-    return role;
   }
 }
