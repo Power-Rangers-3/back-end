@@ -14,6 +14,8 @@ import * as nodemailer from 'nodemailer';
 
 @Injectable()
 export class UsersService {
+  private secretWord = '';
+
   constructor(
     @InjectModel(User) private userRepository: typeof User,
     private roleService: RolesService,
@@ -43,61 +45,32 @@ export class UsersService {
     user.password = hashPassword;
   }
 
+  // ****************************
   async refreshPasswordRequest(dto: RefreshPasswordRequest) {
     let correctMail = '';
+
     try {
       const mail = await this.getUserByEmail(dto.email);
       correctMail = mail.email ? mail.email : "There is not such email 001";
-      console.log(`001 ${correctMail}`);
       const emailConfig: nodemailer.SentMessageInfo = {
         host: process.env.SMTP_HOST,
         port: Number(process.env.SMTP_PORT),
-        // secure: process.env.SMTP_SECURE,
-        // requireTLS: true,
-        // secure: false,
-        // secureConnection: false,
         auth: {
-          // type: 'login',
-          // security: 'STARTTLS',
           user: process.env.SMTP_USER,
-          pass: process.env.SMTP_PASSWORD,
+          pass: process.env.SMTP_PASS,
         },
-        // tls: {
-        //   // do not fail on invalid certs
-        //   rejectUnauthorized: false,
-        // },
-        // tls: {
-        //   ciphers:'SSLv3'
-        // },
       }
-      console.log(emailConfig);
-      let transporter = nodemailer.createTransport(emailConfig);
-      let message = {
-        from: 'Sender Name <sender@example.com>',
-        to: 'Recipient <recipient@example.com>',
-        subject: 'Nodemailer is unicode friendly ✔',
-        text: 'Hello to myself!',
-        html: '<p><b>Hello</b> to myself!</p>'
-      };
 
-      transporter.sendMail(message, (err, info) => {
-        if (err) {
-          console.log('Error occurred. ' + err.message);
-          return process.exit(1);
-        }
+      this.secretWord = String(Math.floor(Math.random() * 1000000));
 
-        console.log('Message sent: %s', info.messageId);
-        // Preview only available when sending through an Ethereal account
-        console.log('Preview URL: %s', nodemailer.getTestMessageUrl(info));
-      });
-      // const emailService = new EmailService('https://your-app.com', emailConfig);
-      // await emailService.sendPasswordResetEmail(dto.email, '123456');
+      const emailService = new EmailService('https://your-app.com', emailConfig);
+      await emailService.sendPasswordResetEmail(dto.email, this.secretWord);
     } catch (err) {
       console.log(err);
       correctMail = "There is no such email 002";
     }
 
-    return correctMail;
+    return { correctMail };
   }
 
   async getUserInfo(token: string) {
