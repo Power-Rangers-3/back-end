@@ -11,10 +11,14 @@ import { NewPassword } from './dto/refresh-password.dto';
 import { RefreshPasswordRequest } from './dto/refresh-password-request.dto';
 import { EmailService } from './helpers/email-service';
 import * as nodemailer from 'nodemailer';
+import { RefreshPasswordAnswerCode } from './dto/refresh-password-answer-code';
+import { initWaitListLine, IWaitListLine } from '../models';
 
 @Injectable()
 export class UsersService {
   private secretWord = '';
+
+  private waitList: IWaitListLine[] = [initWaitListLine];
 
   constructor(
     @InjectModel(User) private userRepository: typeof User,
@@ -70,7 +74,46 @@ export class UsersService {
       correctMail = "There is no such email 002";
     }
 
+    const recordLine: IWaitListLine = {
+      email: dto.email,
+      secret: this.secretWord,
+      answerDate: new Date().getTime(),
+    };
+    this.waitList = this.waitList.filter((item) => {
+      return item.email !== dto.email;
+    });
+    this.waitList.push(recordLine);
+    if (this.waitList[0].email == '') this.waitList.shift();
+    console.log(this.waitList);
+
     return { correctMail };
+  }
+
+  async refreshPasswordAnswerCode(dto: RefreshPasswordAnswerCode) {
+    // check if the email exists in DB
+    const a = await this.getUserByEmail(dto.email);
+    const isCorrectEmail = a.email === dto.email;
+
+    // check if the email exists in the queue array
+    const b = this.waitList.find((item) => item.email === dto.email);
+    const isMailInList = b.email === dto.email;
+    // check if time is enough to change the password - delete the wrong line from the queue array
+    const isTimeWell =(((new Date().getTime()) - b.answerDate) / 60000) < 60;
+
+    if (isCorrectEmail && isMailInList && isTimeWell) {
+      this.waitList = this.waitList.filter((item) => item.email !== dto.email);
+      this.waitList = this.waitList.length ? this.waitList : [initWaitListLine];
+    //  change password
+    }
+
+
+
+    console.log(`Check-box: ${isCorrectEmail} and isMailInList is ${isMailInList}`);
+    console.log(isCorrectEmail);
+    console.log(isMailInList);
+    console.log(isTimeWell);
+    console.log(this.waitList);
+    return dto;
   }
 
   async getUserInfo(token: string) {

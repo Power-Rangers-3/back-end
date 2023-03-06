@@ -26,6 +26,7 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { NewPassword } from './dto/refresh-password.dto';
 import { RefreshPasswordRequest } from './dto/refresh-password-request.dto';
 import { CurrentUser } from 'src/decorators/current-user';
+import { RefreshPasswordAnswerCode } from './dto/refresh-password-answer-code';
 
 @ApiTags('Users')
 @Controller('users')
@@ -66,10 +67,12 @@ export class UsersController {
     return this.userService.refreshPasswordRequest(dto);
   }
 
-  // @Post('/refresh-password-answer-code')
-  // refreshPasswordAnswerCode(@Body() dto: NewPassword) {
-  //   return this.userService.refreshPassword(dto);
-  // }
+  @ApiOperation({ summary: 'send secret and email to change password' })
+  @ApiResponse({ status: 200 })
+  @Post('/refresh-password-answer-code')
+  refreshPasswordAnswerCode(@Body() dto: RefreshPasswordAnswerCode) {
+    return this.userService.refreshPasswordAnswerCode(dto);
+  }
 
   @ApiBearerAuth()
   @ApiOperation({ summary: 'update user data' })
