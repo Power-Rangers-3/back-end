@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { SequelizeModule } from '@nestjs/sequelize';
 import { UsersModule } from './users/users.module';
 import { ConfigModule } from '@nestjs/config';
-import { User } from './users/user.models';
+import { User } from './users/user.model';
 import { File } from './file/file.model';
 import { RolesModule } from './roles/roles.module';
 import { Role } from './roles/roles.model';
@@ -10,6 +10,10 @@ import { AuthController } from './auth/auth.controller';
 import { AuthService } from './auth/auth.service';
 import { AuthModule } from './auth/auth.module';
 import { FileModule } from './file/file.module';
+import { CardModule } from './card/card.module';
+import { UserCardsFavorites } from './card/entities/user-card-favorites.model';
+import { UserCardsViewed } from './card/entities/user-card-viewed.model';
+import { Card } from './card/entities/card.model';
 
 @Module({
   controllers: [AuthController],
@@ -24,12 +28,13 @@ import { FileModule } from './file/file.module';
       username: process.env.POSTGRES_USER,
       password: process.env.POSTGRES_PASSWORD,
       database: process.env.POSTGRES_DB,
-      models: [User, Role, File],
+      models: [User, Role, File, Card, UserCardsFavorites, UserCardsViewed],
       autoLoadModels: true,
     }),
     UsersModule,
     RolesModule,
     AuthModule,
+    CardModule,
     // FileModule,
   ],
   providers: [AuthService],

@@ -1,5 +1,5 @@
 import { ApiProperty, OmitType } from '@nestjs/swagger';
-import { User } from 'src/users/user.models';
+import { User } from 'src/users/user.model';
 
 export const fields = ['password']
 

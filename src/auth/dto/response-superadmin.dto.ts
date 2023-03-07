@@ -1,5 +1,5 @@
 import { PickType } from '@nestjs/swagger';
-import { User } from 'src/users/user.models';
+import { User } from 'src/users/user.model';
 
 export const responseSuperAdminFields = ['id', 'email', 'name', 'fullname', 'idRole']
 

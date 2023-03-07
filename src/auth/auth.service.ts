@@ -9,7 +9,7 @@ import { CreateUserDto } from '../users/dto/create-user.dto';
 import { UsersService } from '../users/users.service';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcryptjs';
-import { User } from '../users/user.models';
+import { User } from '../users/user.model';
 import { LoginUserDto } from 'src/users/dto/login-user.dto';
 import { userSuperAdmin } from 'helpers/admin-data';
 import { RolesService } from 'src/roles/roles.service';

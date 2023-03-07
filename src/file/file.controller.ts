@@ -21,7 +21,7 @@ import { SaveFileDto } from './dto/save-file.dto';
 import { ApiFile } from './api-file.decorator';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { CurrentUser } from 'src/decorators/current-user';
-import { User } from 'src/users/user.models';
+import { User } from 'src/users/user.model';
 
 @ApiTags('Upload file')
 @Controller('file')
