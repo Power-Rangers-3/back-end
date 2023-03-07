@@ -1,20 +1,21 @@
 import { Body, Controller, Get, Post, Res } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { CreateUserDto } from '../users/dto/create-user.dto';
+import { CreateUserDto } from '../user/dto/create-user.dto';
 import { AuthService } from './auth.service';
 import { Token } from './dto/create-auth.dto';
 import { Response } from 'express';
 import { Cookies } from 'src/decorators/cookies';
-import { LoginUserDto } from 'src/users/dto/login-user.dto';
-import { User } from 'src/users/user.model';
-import { ResponseSuperAdminDto, responseSuperAdminFields } from './dto/response-superadmin.dto';
+import { LoginUserDto } from 'src/user/dto/login-user.dto';
+import { User } from 'src/user/user.model';
+import {
+  ResponseSuperAdminDto,
+  responseSuperAdminFields,
+} from './dto/response-superadmin.dto';
 
 @ApiTags('Authorization')
 @Controller('auth')
 export class AuthController {
-  constructor(
-    private authService: AuthService,
-    ) {}
+  constructor(private authService: AuthService) {}
 
   @ApiOperation({ summary: 'trying to login' })
   @ApiResponse({ status: 200, type: Token })
@@ -64,10 +65,10 @@ export class AuthController {
   }
 
   @ApiOperation({ summary: 'creating roles and SuperAdmin (for development)' })
-  @ApiResponse({ status: 200, type: ResponseSuperAdminDto})
+  @ApiResponse({ status: 200, type: ResponseSuperAdminDto })
   @Post('/superadmin')
   async createRolesAndSuperAdmin(): Promise<Partial<User>> {
-    const admin = await this.authService.createRolesAndSuperAdmin()
-    return this.authService.filterResponse(admin, responseSuperAdminFields)
+    const admin = await this.authService.createRolesAndSuperAdmin();
+    return this.authService.filterResponse(admin, responseSuperAdminFields);
   }
 }

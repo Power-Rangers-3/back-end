@@ -1,18 +1,18 @@
 import { Module } from '@nestjs/common';
 import { SequelizeModule } from '@nestjs/sequelize';
-import { UsersModule } from './users/users.module';
+import { UsersModule } from './user/user.module';
 import { ConfigModule } from '@nestjs/config';
-import { User } from './users/user.model';
+import { User } from './user/user.model';
 import { File } from './file/file.model';
-import { RolesModule } from './roles/roles.module';
-import { Role } from './roles/roles.model';
+import { RoleModule } from './role/role.module';
+import { Role } from './role/role.model';
 import { AuthController } from './auth/auth.controller';
 import { AuthService } from './auth/auth.service';
 import { AuthModule } from './auth/auth.module';
 import { FileModule } from './file/file.module';
 import { CardModule } from './card/card.module';
-import { UserCardsFavorites } from './card/entities/user-card-favorites.model';
-import { UserCardsViewed } from './card/entities/user-card-viewed.model';
+import { UserCardFavorites } from './card/entities/user-card-favorites.model';
+import { UserCardViewed } from './card/entities/user-card-viewed.model';
 import { Card } from './card/entities/card.model';
 
 @Module({
@@ -28,11 +28,11 @@ import { Card } from './card/entities/card.model';
       username: process.env.POSTGRES_USER,
       password: process.env.POSTGRES_PASSWORD,
       database: process.env.POSTGRES_DB,
-      models: [User, Role, File, Card, UserCardsFavorites, UserCardsViewed],
+      models: [User, Role, File, Card, UserCardFavorites, UserCardViewed],
       autoLoadModels: true,
     }),
     UsersModule,
-    RolesModule,
+    RoleModule,
     AuthModule,
     CardModule,
     // FileModule,

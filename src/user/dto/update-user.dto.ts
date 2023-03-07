@@ -30,9 +30,9 @@ export class UpdateUserDto {
     description: 'user phone',
     required: false,
   })
-  @IsMobilePhone() 
+  @IsMobilePhone()
   readonly phone: string | null;
-  
+
   @ApiProperty({
     example: 'https://t.me/@ivanov',
     description: 'telegram address',

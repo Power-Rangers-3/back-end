@@ -9,7 +9,7 @@ import {
   Post,
   UseGuards,
 } from '@nestjs/common';
-import { UsersService } from './users.service';
+import { UserService } from './user.service';
 import {
   ApiBearerAuth,
   ApiBody,
@@ -21,17 +21,17 @@ import { User } from './user.model';
 import { Role } from 'src/auth/roles-auth.decorator';
 import { RolesGuard } from 'src/auth/roles.guard';
 import { AddRoleDto } from './dto/add-role.dto';
-import { JwtAuthGuard } from './../auth/jwt-auth.guard';
+import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { NewPassword } from './dto/refresh-password.dto';
 import { CurrentUser } from 'src/decorators/current-user';
-import { UserRole } from 'src/roles/roles.model';
+import { UserRole } from 'src/role/role.model';
 import { ResponseGetInfoDto } from './dto/response-get-info.dto';
 
 @ApiTags('Users')
 @Controller('users')
-export class UsersController {
-  constructor(private userService: UsersService) {}
+export class UserController {
+  constructor(private userService: UserService) {}
 
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
@@ -61,8 +61,8 @@ export class UsersController {
   @Post('/refresh-password')
   refreshPassword(
     @Body() dto: NewPassword,
-    @CurrentUser('email') email: User['email']
-    ) {
+    @CurrentUser('email') email: User['email'],
+  ) {
     return this.userService.refreshPassword(dto, email);
   }
 
@@ -72,7 +72,10 @@ export class UsersController {
   @ApiResponse({ status: 200, type: User })
   @UseGuards(JwtAuthGuard)
   @Patch('/:id/update')
-  update(@Param('id') id: string, @Body() dto: Partial<UpdateUserDto>): Promise<Partial<UpdateUserDto>> {
+  update(
+    @Param('id') id: string,
+    @Body() dto: Partial<UpdateUserDto>,
+  ): Promise<Partial<UpdateUserDto>> {
     return this.userService.updateUser(id, dto);
   }
 
