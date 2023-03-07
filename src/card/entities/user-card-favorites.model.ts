@@ -1,5 +1,5 @@
 import { Column, DataType, ForeignKey, Model, Table } from 'sequelize-typescript';
-import { User } from 'src/users/user.models';
+import { User } from 'src/users/user.model';
 import { Card } from './card.model';
 
 @Table({tableName: 'user_cards_favorites', createdAt: false, updatedAt: false})

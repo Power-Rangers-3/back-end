@@ -7,7 +7,7 @@ import {
   ForeignKey,
   BelongsTo,
 } from 'sequelize-typescript';
-import { User } from 'src/users/user.models';
+import { User } from 'src/users/user.model';
 
 @Table({ tableName: 'files' })
 export class File extends Model<File> {

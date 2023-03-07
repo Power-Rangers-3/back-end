@@ -6,7 +6,7 @@ import { Token } from './dto/create-auth.dto';
 import { Response } from 'express';
 import { Cookies } from 'src/decorators/cookies';
 import { LoginUserDto } from 'src/users/dto/login-user.dto';
-import { User } from 'src/users/user.models';
+import { User } from 'src/users/user.model';
 import { ResponseSuperAdminDto, responseSuperAdminFields } from './dto/response-superadmin.dto';
 
 @ApiTags('Authorization')

@@ -1,6 +1,6 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { Table, Model, Column, DataType, ForeignKey, BelongsTo, BelongsToMany } from "sequelize-typescript";
-import { User } from "src/users/user.models";
+import { Table, Model, Column, DataType, BelongsToMany } from "sequelize-typescript";
+import { User } from "src/users/user.model";
 import { UserCardsFavorites } from './user-card-favorites.model';
 import { UserCardsViewed } from './user-card-viewed.model';
 

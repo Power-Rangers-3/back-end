@@ -6,7 +6,7 @@ import {
   Table,
 } from 'sequelize-typescript';
 import { ApiProperty } from '@nestjs/swagger';
-import { User } from '../users/user.models';
+import { User } from '../users/user.model';
 
 interface RoleCreationAttr {
   role: UserRole;
