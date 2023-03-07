@@ -54,7 +54,7 @@ export class CardController {
 
 
   @ApiOperation({ summary: 'return list of sorted card by name' })
-  // @ApiResponse({ type: ResponseFavoritesCard })
+  @ApiResponse({ type: [Card]})
   @Get('/pagination/:amount')
   getSortedCardsForPagination(
     @Param('amount') amount: string,
