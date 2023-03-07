@@ -29,6 +29,22 @@ export class CardService {
     return { userId: dto.userId, cardId: id };
   }
 
+  async addViewed(
+    id: string,
+    dto: AddCardInFavoritesDto,
+  ): Promise<ResponseFavoritesCard> {
+    const card = await this.cardRepository.findByPk(id);
+    if (!card) {
+      throw new HttpException('Card not found', HttpStatus.NOT_FOUND);
+    }
+    const user = await this.userService.getUserById(dto.userId);
+    if (!user) {
+      throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+    }
+    await card.$add('usersViewed', user.id);
+    return { userId: dto.userId, cardId: id };
+  }
+
   async create(dto: CreateCardDto): Promise<Card> {
     const card = await this.cardRepository.create(dto);
     return card.toJSON();
