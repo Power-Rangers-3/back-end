@@ -1,5 +1,6 @@
 import {
   BelongsTo,
+  BelongsToMany,
   Column,
   DataType,
   ForeignKey,
@@ -10,6 +11,9 @@ import {
 import { ApiProperty } from '@nestjs/swagger';
 import { Role } from 'src/roles/roles.model';
 import { File } from '../file/file.model';
+import { Card } from 'src/card/entities/card.model';
+import { UserCardsFavorites } from 'src/card/entities/user-card-favorites.model';
+import { UserCardsViewed } from 'src/card/entities/user-card-viewed.model';
 
 interface UserCreationAttr {
   email: string;
@@ -67,4 +71,10 @@ export class User extends Model<User, UserCreationAttr> {
 
   @HasOne(() => File)
   file?: File[];
+
+  @BelongsToMany(() => Card, () => UserCardsFavorites)
+  cardsFavorites: User[];
+
+  @BelongsToMany(() => Card, () => UserCardsViewed)
+  cardsViewed: User[];
 }
