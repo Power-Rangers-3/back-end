@@ -2,6 +2,7 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { UserService } from 'src/user/user.service';
 import { AddCardInFavoritesDto } from './dto/add-favorites.dto';
+import { CreateCardDto } from './dto/create-card.dto';
 import { ResponseFavoritesCard } from './dto/response-favorites.dto';
 import { Card } from './entities/card.model';
 
@@ -26,5 +27,10 @@ export class CardService {
     }
     await card.$add('usersFavorites', user.id);
     return { userId: dto.userId, cardId: id };
+  }
+
+  async create(dto: CreateCardDto): Promise<Card> {
+    const card = await this.cardRepository.create(dto)
+    return card.toJSON()
   }
 }
