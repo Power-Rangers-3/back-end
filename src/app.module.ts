@@ -10,6 +10,7 @@ import { AuthController } from './auth/auth.controller';
 import { AuthService } from './auth/auth.service';
 import { AuthModule } from './auth/auth.module';
 import { FileModule } from './file/file.module';
+import { CardModule } from './card/card.module';
 
 @Module({
   controllers: [AuthController],
@@ -30,6 +31,7 @@ import { FileModule } from './file/file.module';
     UsersModule,
     RolesModule,
     AuthModule,
+    CardModule,
     // FileModule,
   ],
   providers: [AuthService],
