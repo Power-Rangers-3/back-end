@@ -11,7 +11,7 @@ export class AddRoleDto {
   @IsEnum(UserRole)
   readonly role: UserRole;
   
-  @ApiProperty({ example: '2', description: 'uniq users id' })
+  @ApiProperty({ example: '4261d9a-dfa3-4592-a6de-cafef64acea2', description: 'uniq users id' })
   @IsNotEmpty()
   @IsString()
   readonly userId: string;
