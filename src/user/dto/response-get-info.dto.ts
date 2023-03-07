@@ -24,7 +24,7 @@ export class ResponseGetInfoDto extends OmitType(
       '{ "id": "5dfacf35-8ef3-4a4d-a40b-1627734142cb", "role": "SuperAdmin", "description": "Create and assign admin roles" }',
     description: 'non uniq role',
   })
-  role: {};
+  role: any;
 
   @ApiProperty({
     example: 'kdjfht75525hkE8HGS.jpg',
