@@ -11,6 +11,9 @@ import { AuthService } from './auth/auth.service';
 import { AuthModule } from './auth/auth.module';
 import { FileModule } from './file/file.module';
 import { CardModule } from './card/card.module';
+import { UserCardsFavorites } from './card/entities/user-card-favorites.model';
+import { UserCardsViewed } from './card/entities/user-card-viewed.model';
+import { Card } from './card/entities/card.model';
 
 @Module({
   controllers: [AuthController],
@@ -25,7 +28,7 @@ import { CardModule } from './card/card.module';
       username: process.env.POSTGRES_USER,
       password: process.env.POSTGRES_PASSWORD,
       database: process.env.POSTGRES_DB,
-      models: [User, Role, File],
+      models: [User, Role, File, Card, UserCardsFavorites, UserCardsViewed],
       autoLoadModels: true,
     }),
     UsersModule,
