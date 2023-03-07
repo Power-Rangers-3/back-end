@@ -1,5 +1,20 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Put, UseGuards } from '@nestjs/common';
-import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  Put,
+  UseGuards,
+} from '@nestjs/common';
+import {
+  ApiBearerAuth,
+  ApiOperation,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { CardService } from './card.service';
@@ -18,8 +33,8 @@ export class CardController {
   @Put(':id/favorites')
   addFavorites(
     @Param('id') idCard: string,
-    @Body() dto: AddCardInFavoritesDto
-    ): Promise<ResponseFavoritesCard> {
-    return this.cardService.addFavorites(idCard, dto)
+    @Body() dto: AddCardInFavoritesDto,
+  ): Promise<ResponseFavoritesCard> {
+    return this.cardService.addFavorites(idCard, dto);
   }
 }

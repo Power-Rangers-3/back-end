@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsEnum, IsNotEmpty } from 'class-validator';
-import { UserRole } from '../roles.model';
+import { UserRole } from '../role.model';
 
 export class CreateRoleDto {
   @ApiProperty({

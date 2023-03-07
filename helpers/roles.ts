@@ -1,5 +1,5 @@
-import { CreateRoleDto } from 'src/roles/dto/create-role.dto';
-import { UserRole } from 'src/roles/roles.model';
+import { CreateRoleDto } from 'src/role/dto/create-role.dto';
+import { UserRole } from 'src/role/role.model';
 
 
 export const roleSuperAdminData: CreateRoleDto = {

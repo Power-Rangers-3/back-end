@@ -1,5 +1,5 @@
-import { ApiProperty } from "@nestjs/swagger";
-import { IsEmail, IsNotEmpty, IsString, Length } from "class-validator";
+import { ApiProperty } from '@nestjs/swagger';
+import { IsEmail, IsNotEmpty, IsString, Length } from 'class-validator';
 
 export class NewPassword {
   @ApiProperty({
@@ -15,7 +15,7 @@ export class NewPassword {
   @Length(4, 16, { message: 'incorrect length (more than 4, less than 16)' })
   @IsNotEmpty()
   readonly password: string;
-  
+
   @ApiProperty({ example: 'password456', description: 'non uniq password' })
   @IsString({ message: 'should be string' })
   @Length(4, 16, { message: 'incorrect length (more than 4, less than 16)' })

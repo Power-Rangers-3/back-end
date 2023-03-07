@@ -5,22 +5,22 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { pick } from 'lodash';
-import { CreateUserDto } from '../users/dto/create-user.dto';
-import { UsersService } from '../users/users.service';
+import { CreateUserDto } from '../user/dto/create-user.dto';
+import { UserService } from '../user/user.service';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcryptjs';
-import { User } from '../users/user.model';
-import { LoginUserDto } from 'src/users/dto/login-user.dto';
+import { User } from '../user/user.model';
+import { LoginUserDto } from 'src/user/dto/login-user.dto';
 import { userSuperAdmin } from 'helpers/admin-data';
-import { RolesService } from 'src/roles/roles.service';
+import { RoleService } from 'src/role/role.service';
 import { roleAdminData, roleSuperAdminData, roleUserData } from 'helpers/roles';
 
 @Injectable()
 export class AuthService {
   constructor(
-    private userService: UsersService,
+    private userService: UserService,
     private jwtService: JwtService,
-    private rolesService: RolesService,
+    private roleService: RoleService,
   ) {}
 
   async login(userDto: LoginUserDto) {
@@ -80,15 +80,17 @@ export class AuthService {
 
   async createRolesAndSuperAdmin(): Promise<User> {
     const roles = await Promise.all([
-      this.rolesService.findOrCreate(roleSuperAdminData),
-      this.rolesService.findOrCreate(roleAdminData),
-      this.rolesService.findOrCreate(roleUserData),
+      this.roleService.findOrCreate(roleSuperAdminData),
+      this.roleService.findOrCreate(roleAdminData),
+      this.roleService.findOrCreate(roleUserData),
     ]);
     const roleSuperAdmin = roles[0];
     console.log('roles', roles);
-    
+
     await this.registration(userSuperAdmin);
-    const superAdmin = await this.userService.getUserByEmail(userSuperAdmin.email);
+    const superAdmin = await this.userService.getUserByEmail(
+      userSuperAdmin.email,
+    );
     await superAdmin.update({
       idRole: roleSuperAdmin.id,
       role: roleSuperAdmin,
@@ -97,6 +99,6 @@ export class AuthService {
   }
 
   filterResponse(model: User, fields: string[]): Partial<User> {
-    return pick(model, fields)
+    return pick(model, fields);
   }
 }

@@ -2,24 +2,22 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { User } from './user.model';
 import { InjectModel } from '@nestjs/sequelize';
 import { CreateUserDto } from './dto/create-user.dto';
-import { RolesService } from '../roles/roles.service';
+import { RoleService } from '../role/role.service';
 import { AddRoleDto } from './dto/add-role.dto';
 import * as bcrypt from 'bcryptjs';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { JwtService } from '@nestjs/jwt';
 import { NewPassword } from './dto/refresh-password.dto';
-import { UserRole } from 'src/roles/roles.model';
+import { UserRole } from 'src/role/role.model';
 
 @Injectable()
-export class UsersService {
+export class UserService {
   constructor(
     @InjectModel(User) private userRepository: typeof User,
-    private roleService: RolesService,
-    private jwtService: JwtService,
+    private roleService: RoleService,
   ) {}
 
   async createUser(dto: CreateUserDto) {
-    const user = await this.userRepository.create(dto);  
+    const user = await this.userRepository.create(dto);
     const role = await this.roleService.find(UserRole.User);
     if (role) {
       await user.$set('role', role.id);
@@ -47,7 +45,7 @@ export class UsersService {
 
   async getUserInfo(email: string): Promise<Partial<User>> {
     const user = await this.getUserByEmail(email);
-    const { password, ...userData } = user.toJSON()
+    const { password, ...userData } = user.toJSON();
     return userData;
   }
 
@@ -79,16 +77,19 @@ export class UsersService {
     await user.update({
       idRole: role.id,
       role: role,
-    })
+    });
     return dto;
   }
 
-  async updateUser(id: string, userDto: Partial<UpdateUserDto>): Promise<Partial<UpdateUserDto>> {
+  async updateUser(
+    id: string,
+    userDto: Partial<UpdateUserDto>,
+  ): Promise<Partial<UpdateUserDto>> {
     const user = await this.userRepository.findByPk(id);
     if (!user) throw new HttpException('User not found', HttpStatus.NOT_FOUND);
     if (!userDto) throw new HttpException('No content', HttpStatus.NO_CONTENT);
     await user.update(userDto);
-    const { password, ...userData } = user.toJSON()
+    const { password, ...userData } = user.toJSON();
     return userData;
   }
 

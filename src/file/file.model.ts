@@ -7,11 +7,14 @@ import {
   ForeignKey,
   BelongsTo,
 } from 'sequelize-typescript';
-import { User } from 'src/users/user.model';
+import { User } from 'src/user/user.model';
 
 @Table({ tableName: 'files' })
 export class File extends Model<File> {
-  @ApiProperty({ example: '24261d9a-dfa3-4592-a6de-cafef64acea2', description: 'uniq id' })
+  @ApiProperty({
+    example: '24261d9a-dfa3-4592-a6de-cafef64acea2',
+    description: 'uniq id',
+  })
   @Column({
     type: DataType.UUID,
     defaultValue: DataType.UUIDV4,
