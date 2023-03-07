@@ -52,4 +52,16 @@ export class CardController {
   ): Promise<ResponseFavoritesCard> {
     return this.cardService.addFavorites(idCard, dto);
   }
+
+  @ApiOperation({ summary: 'add card in viewed' })
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
+  @ApiResponse({ type: ResponseFavoritesCard })
+  @Put(':id/viewed')
+  addViewed(
+    @Param('id') idCard: string,
+    @Body() dto: AddCardInFavoritesDto,
+  ): Promise<ResponseFavoritesCard> {
+    return this.cardService.addFavorites(idCard, dto);
+  }
 }
