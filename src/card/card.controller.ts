@@ -3,11 +3,10 @@ import {
   Get,
   Post,
   Body,
-  Patch,
   Param,
-  Delete,
   Put,
   UseGuards,
+  Query,
 } from '@nestjs/common';
 import {
   ApiBearerAuth,
@@ -38,7 +37,7 @@ export class CardController {
   @ApiResponse({ type: CreateCardDto })
   @Post()
   createCard(@Body() dto: CreateCardDto): Promise<Card> {
-    return this.cardService.create(dto)
+    return this.cardService.create(dto);
   }
 
   @ApiOperation({ summary: 'add card in favorites' })
@@ -51,6 +50,17 @@ export class CardController {
     @Body() dto: AddCardInFavoritesDto,
   ): Promise<ResponseFavoritesCard> {
     return this.cardService.addFavorites(idCard, dto);
+  }
+
+
+  @ApiOperation({ summary: 'return list of sorted card by name' })
+  // @ApiResponse({ type: ResponseFavoritesCard })
+  @Get('/pagination/:amount')
+  getSortedCardsForPagination(
+    @Param('amount') amount: string,
+    @Query('type') type: string,
+  ): Promise<Card[]> {
+    return this.cardService.getSortedCardsForPagination(amount, type);
   }
 
   @ApiOperation({ summary: 'add card in viewed' })
