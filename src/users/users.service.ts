@@ -67,7 +67,7 @@ export class UsersService {
 
       this.secretWord = String(Math.floor(Math.random() * 1000000));
 
-      const emailService = new EmailService('https://your-app.com', emailConfig);
+      const emailService = new EmailService(process.env.HTTP_FRONT_DEV, emailConfig);
       await emailService.sendPasswordResetEmail(dto.email, this.secretWord);
     } catch (err) {
       console.log(err);
@@ -83,27 +83,37 @@ export class UsersService {
       return item.email !== dto.email;
     });
     this.waitList.push(recordLine);
-    if (this.waitList[0].email == '') this.waitList.shift();
+    if (this.waitList[0].email == ' ') this.waitList.shift();
     console.log(this.waitList);
 
     return { correctMail };
   }
 
+  // ****************************
   async refreshPasswordAnswerCode(dto: RefreshPasswordAnswerCode) {
     // check if the email exists in DB
+    console.log(dto);
     const a = await this.getUserByEmail(dto.email);
     const isCorrectEmail = a.email === dto.email;
 
     // check if the email exists in the queue array
-    const b = this.waitList.find((item) => item.email === dto.email);
-    const isMailInList = b.email === dto.email;
-    // check if time is enough to change the password - delete the wrong line from the queue array
-    const isTimeWell =(((new Date().getTime()) - b.answerDate) / 60000) < 60;
+    // if (this)
+
+    console.log(this.waitList);
+
+    const lineInWaitList = this.waitList.find((item) => item.email === dto.email);
+    let isMailInList = false;
+    let isTimeWell = false;
+    if (lineInWaitList) {
+      isMailInList = lineInWaitList.email === dto.email;
+      // check if time is enough to change the password - delete the wrong line from the queue array
+      isTimeWell = (((new Date().getTime()) - lineInWaitList.answerDate) / 60000) < 60;
+    }
 
     if (isCorrectEmail && isMailInList && isTimeWell) {
       this.waitList = this.waitList.filter((item) => item.email !== dto.email);
       this.waitList = this.waitList.length ? this.waitList : [initWaitListLine];
-    //  change password
+     // change password
     }
 
 
