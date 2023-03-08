@@ -16,7 +16,7 @@ import { initWaitListLine, IWaitListLine } from '../models';
 
 
 @Injectable()
-export class UsersService{
+export class UserService{
   private secretWord = '';
 
   private waitList: IWaitListLine[] = [initWaitListLine];
