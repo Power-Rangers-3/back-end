@@ -1,0 +1,25 @@
+version: '3.9'
+
+volumes:
+  pg_data:
+
+services:
+  postgres:
+    image: postgres:14.6-alpine
+    env_file:
+      - .env
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+    restart: always
+
+  main:
+    build:
+      context: .
+      dockerfile: prod.Dockerfile
+    env_file:
+      - .env
+    ports:
+      - 8080:${PORT}
+    depends_on:
+      - postgres
+    restart: always
