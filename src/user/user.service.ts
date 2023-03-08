@@ -135,7 +135,7 @@ export class UserService{
 
       this.secretWord = String(Math.floor(Math.random() * 1000000));
 
-      const emailService = new EmailService(process.env.HTTP_FRONT_DEV, emailConfig);
+      const emailService = new EmailService(process.env.HTTP_FRONT, emailConfig);
       await emailService.sendPasswordResetEmail(dto.email, this.secretWord);
     } catch (err) {
       console.log(err);
@@ -203,6 +203,6 @@ export class UserService{
     const hashPassword: string = await bcrypt.hash(dto.newPassword, 5);
     await user.update({password: hashPassword});
 
-    return dto;
+    return user;
   }
 }

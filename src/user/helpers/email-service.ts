@@ -12,7 +12,7 @@ export class EmailService {
   }
 
   async sendPasswordResetEmail(email: string, code: string) {
-    const resetLink = `${this.baseUrl}/reset-password?email=${email}&code=${code}`;
+    const resetLink = `${this.baseUrl}?email=${email}&code=${code}`;
     const mailOptions: nodemailer.SendMail.Options = {
       from: process.env.SMTP_USER, // 'power.rangers.backend@gmail.com',
       to: email,
