@@ -4,6 +4,7 @@ import {
   Delete,
   Get,
   HttpCode,
+  Headers,
   Param,
   Patch,
   Post,
@@ -24,9 +25,12 @@ import { AddRoleDto } from './dto/add-role.dto';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { NewPassword } from './dto/refresh-password.dto';
+import { RefreshPasswordRequest } from './dto/refresh-password-request.dto';
 import { CurrentUser } from 'src/decorators/current-user';
 import { UserRole } from 'src/role/role.model';
 import { ResponseGetInfoDto } from './dto/response-get-info.dto';
+import { RefreshPasswordAnswerCode } from './dto/refresh-password-answer-code';
+
 
 @ApiTags('Users')
 @Controller('users')
@@ -64,6 +68,20 @@ export class UserController {
     @CurrentUser('email') email: User['email'],
   ) {
     return this.userService.refreshPassword(dto, email);
+  }
+
+  @ApiOperation({ summary: 'send address to get email' })
+  @ApiResponse({ status: 200 })
+  @Post('/refresh-password-request')
+  refreshPasswordRequestMail(@Body() dto: RefreshPasswordRequest) {
+    return this.userService.refreshPasswordRequest(dto);
+  }
+
+  @ApiOperation({ summary: 'send secret and email to change password' })
+  @ApiResponse({ status: 200 })
+  @Post('/refresh-password-answer-code')
+  refreshPasswordAnswerCode(@Body() dto: RefreshPasswordAnswerCode) {
+    return this.userService.refreshPasswordAnswerCode(dto);
   }
 
   @ApiBearerAuth()
