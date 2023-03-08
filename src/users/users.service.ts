@@ -113,16 +113,28 @@ export class UsersService {
     if (isCorrectEmail && isMailInList && isTimeWell) {
       this.waitList = this.waitList.filter((item) => item.email !== dto.email);
       this.waitList = this.waitList.length ? this.waitList : [initWaitListLine];
-     // change password
     }
 
 
+    // change password
+    const user = await this.getUserByEmail(dto.email);
+    if (!user) {
+      throw new HttpException('User is not found', HttpStatus.UNAUTHORIZED);
+    }
+    if (user.email !== dto.email) {
+      throw new HttpException('Incorrect email', HttpStatus.UNAUTHORIZED);
+    }
 
     console.log(`Check-box: ${isCorrectEmail} and isMailInList is ${isMailInList}`);
     console.log(isCorrectEmail);
     console.log(isMailInList);
     console.log(isTimeWell);
     console.log(this.waitList);
+
+// change password
+    const hashPassword: string = await bcrypt.hash(dto.newPassword, 5);
+    await user.update({ password: hashPassword });
+
     return dto;
   }
 
