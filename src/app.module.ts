@@ -35,7 +35,7 @@ import { Card } from './card/entities/card.model';
     RoleModule,
     AuthModule,
     CardModule,
-    // FileModule,
+    FileModule,
   ],
   providers: [AuthService],
 })

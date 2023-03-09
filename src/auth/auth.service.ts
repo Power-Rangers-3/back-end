@@ -1,6 +1,4 @@
 import {
-  HttpException,
-  HttpStatus,
   Injectable,
   UnauthorizedException,
 } from '@nestjs/common';
@@ -36,10 +34,7 @@ export class AuthService {
   async registration(userDto: CreateUserDto) {
     const candidate = await this.userService.getUserByEmail(userDto.email);
     if (candidate) {
-      throw new HttpException(
-        'User with that email already exist',
-        HttpStatus.BAD_REQUEST,
-      );
+      throw new UnauthorizedException();
     }
     const hashPassword = await bcrypt.hash(userDto.password, 5);
     const user = await this.userService.createUser({
@@ -63,14 +58,17 @@ export class AuthService {
 
   private async validateUser(userDto: LoginUserDto) {
     const user = await this.userService.getUserByEmail(userDto.email);
+    if(!user) {
+      throw new UnauthorizedException();
+    }
     const passwordEquals = await bcrypt.compare(
       userDto.password,
       user.password,
     );
-    if (user && passwordEquals) {
-      return user;
+    if (!passwordEquals) {
+      throw new UnauthorizedException();
     }
-    throw new UnauthorizedException({ message: 'Uncorrect email or password' });
+    return user
   }
 
   private async validateRefreshToken(token: string) {
@@ -85,8 +83,6 @@ export class AuthService {
       this.roleService.findOrCreate(roleUserData),
     ]);
     const roleSuperAdmin = roles[0];
-    console.log('roles', roles);
-
     await this.registration(userSuperAdmin);
     const superAdmin = await this.userService.getUserByEmail(
       userSuperAdmin.email,

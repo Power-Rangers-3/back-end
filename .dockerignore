@@ -1,0 +1,10 @@
+.idea/
+.vscode/
+dist/
+data/
+
+Dockerfile
+Makefile
+README.md
+docker-compose.yml
+prod-docker-compose.yml
