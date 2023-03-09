@@ -58,20 +58,11 @@ export class CardService {
           HttpStatus.BAD_REQUEST,
         );
       }
-
-      if (amount === 1) {
-        return this.cardRepository.findAll({
-          offset: 0,
-          limit: 10,
-          order: [['name', 'DESC']],
-        });
-      } else {
-        return this.cardRepository.findAll({
-          offset: amount * 10 - 10,
-          limit: 10,
-          order: [['name', 'DESC']],
-        });
-      }
+      this.cardRepository.findAll({
+        offset: amount * 10 - 10,
+        limit: 10,
+        order: [['name', 'DESC']],
+      });
     } else if (type === 'ASC') {
       if (amount < 1) {
         throw new HttpException(
@@ -79,20 +70,11 @@ export class CardService {
           HttpStatus.BAD_REQUEST,
         );
       }
-
-      if (amount === 1) {
-        return this.cardRepository.findAll({
-          offset: 0,
-          limit: 10,
-          order: ['name'],
-        });
-      } else {
-        return this.cardRepository.findAll({
-          offset: amount * 10 - 10,
-          limit: 10,
-          order: ['name'],
-        });
-      }
+      return this.cardRepository.findAll({
+        offset: amount * 10 - 10,
+        limit: 10,
+        order: ['name'],
+      });
     } else throw new HttpException('Wrong sorted type', HttpStatus.BAD_REQUEST);
   }
 }
