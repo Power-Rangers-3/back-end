@@ -11,9 +11,9 @@ import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcryptjs';
 import { User } from '../user/user.model';
 import { LoginUserDto } from 'src/user/dto/login-user.dto';
-import { userSuperAdmin } from 'helpers/admin-data';
+import { userSuperAdmin } from 'src/auth/constant-data/admin-data';
 import { RoleService } from 'src/role/role.service';
-import { roleAdminData, roleSuperAdminData, roleUserData } from 'helpers/roles';
+import { roleAdminData, roleSuperAdminData, roleUserData } from 'src/auth/constant-data/roles';
 
 @Injectable()
 export class AuthService {
