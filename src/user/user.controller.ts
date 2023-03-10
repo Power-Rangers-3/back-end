@@ -31,7 +31,6 @@ import { UserRole } from 'src/role/role.model';
 import { ResponseGetInfoDto } from './dto/response-get-info.dto';
 import { RefreshPasswordAnswerCode } from './dto/refresh-password-answer-code';
 
-
 @ApiTags('Users')
 @Controller('users')
 export class UserController {

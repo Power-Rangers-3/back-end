@@ -77,4 +77,12 @@ export class CardService {
       });
     } else throw new HttpException('Wrong sorted type', HttpStatus.BAD_REQUEST);
   }
+
+  async getCardById(id): Promise<Card> {
+    const card = this.cardRepository.findByPk(id);
+    if (!card) {
+      throw new HttpException('Card not found', HttpStatus.NOT_FOUND);
+    }
+    return card;
+  }
 }

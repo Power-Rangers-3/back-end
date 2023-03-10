@@ -39,7 +39,6 @@ export class EmailService {
         // Preview only available when sending through an Ethereal account
         console.log('Preview URL: %s', nodemailer.getTestMessageUrl(info));
       });
-
     } catch (err) {
       console.error(`Error sending password reset email to ${email}:`, err);
       throw new Error('Unable to send password reset email');

@@ -1,7 +1,4 @@
-import {
-  Injectable,
-  UnauthorizedException,
-} from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { pick } from 'lodash';
 import { CreateUserDto } from '../user/dto/create-user.dto';
 import { UserService } from '../user/user.service';
@@ -11,7 +8,11 @@ import { User } from '../user/user.model';
 import { LoginUserDto } from 'src/user/dto/login-user.dto';
 import { userSuperAdmin } from 'src/auth/constant-data/admin-data';
 import { RoleService } from 'src/role/role.service';
-import { roleAdminData, roleSuperAdminData, roleUserData } from 'src/auth/constant-data/roles';
+import {
+  roleAdminData,
+  roleSuperAdminData,
+  roleUserData,
+} from 'src/auth/constant-data/roles';
 
 @Injectable()
 export class AuthService {
@@ -58,7 +59,7 @@ export class AuthService {
 
   private async validateUser(userDto: LoginUserDto) {
     const user = await this.userService.getUserByEmail(userDto.email);
-    if(!user) {
+    if (!user) {
       throw new UnauthorizedException();
     }
     const passwordEquals = await bcrypt.compare(
@@ -68,7 +69,7 @@ export class AuthService {
     if (!passwordEquals) {
       throw new UnauthorizedException();
     }
-    return user
+    return user;
   }
 
   private async validateRefreshToken(token: string) {
