@@ -120,7 +120,7 @@ export class UserService{
 
 // ****************************
   async refreshPasswordRequest(dto: RefreshPasswordRequest) {
-    let correctMail = '';
+    let correctMail;
     let secretWord = '';
 
     // const users = await this.userRepository.findAll();
@@ -164,81 +164,36 @@ export class UserService{
     return {correctMail};
   }
 
-// ****************************
   async refreshPasswordAnswerCode(dto: RefreshPasswordAnswerCode) {
     let isCorrectEmail = false;
     let isCorrectSecret = false;
-    let isEmailInList = false;
     let isTimeWell = false;
     let user: User;
-    // let isLineInWaitList = false;
-    // let is
-    // try {
-    //   // check if the email exists in DB
-    //   console.log(dto);
-    //   const a = await this.getUserByEmail(dto.email);
-    //   isCorrectEmail = a.email === dto.email;
-    //
-    // } catch (err) {
-    //   throw new BadRequestException('Bad email', {cause: new Error(), description: 'There is not such email' });
-    // }
+    let isPasswordIsEqual = false;
 
     try {
-      console.log(this.waitList);
       user = await this.getUserByEmail(dto.email);
       isCorrectEmail = user.email === dto.email;
-
-      // const users = this.userRepository.findAll();
-      // console.log(users);
 
       const lineInWaitList = this.waitList.find((item) => item.email === dto.email);
 
       if (lineInWaitList.email) {
-        // check if the email exists in the queue array
-        // isEmailInList = lineInWaitList.email === dto.email;
-        // a check - is there enough time to change the password - delete the wrong line from the queue array
         isTimeWell = (((new Date().getTime()) - lineInWaitList.answerDate) / 60000) < 60;
         isCorrectSecret = dto.secret === lineInWaitList.secret;
+        isPasswordIsEqual = dto.password === dto.newPassword;
+
       }
     } catch (err) {
       throw new BadRequestException('Something went wrong', {cause: new Error(), description: 'Your request is incorrect'});
     }
 
-
     if (!isCorrectEmail) throw new BadRequestException('Bad email', {cause: new Error(), description: 'There is not such email' });
-    // if (!isEmailInList) throw new BadRequestException('Something went wrong', {cause: new Error(), description: 'There is no such email in the queue to change the pass'});
     if (!isTimeWell) throw new BadRequestException('Something went wrong', {cause: new Error(), description: 'Your request is too late'});
     if (!isCorrectSecret) throw new BadRequestException('Something went wrong', {cause: new Error(), description: 'Your secret is incorrect'});
+    if (!isPasswordIsEqual) throw new BadRequestException('Something went wrong', {cause: new Error(), description: "Password not equal copy"});
 
-
-
-    // if (this)
-
-
-
-    // if (isCorrectEmail && isEmailInList && isTimeWell) {
-    // }
-
-
-    // change password
-    // const user = await this.getUserByEmail(dto.email);
-    // if (!user) {
-    //   throw new HttpException('User is not found', HttpStatus.UNAUTHORIZED);
-    // }
-    // if (user.email !== dto.email) {
-    //   throw new HttpException('Incorrect email', HttpStatus.UNAUTHORIZED);
-    // }
-
-    // console.log(`Check-box: ${isCorrectEmail} and isMailInList is ${isEmailInList}`);
-    // console.log(isCorrectEmail);
-    // console.log(isEmailInList);
-    // console.log(isTimeWell);
-    console.log(this.waitList);
-
-// change password
     this.waitList = this.waitList.filter((item) => item.email !== dto.email);
     this.waitList = this.waitList.length ? this.waitList: [initWaitListLine];
-    console.log('Password is changed');
     const hashPassword: string = await bcrypt.hash(dto.newPassword, 5);
     await user.update({password: hashPassword});
 
