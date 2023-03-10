@@ -52,15 +52,21 @@ export class CardController {
     return this.cardService.addFavorites(idCard, dto);
   }
 
-
   @ApiOperation({ summary: 'return list of sorted card by name' })
-  @ApiResponse({ type: [Card]})
-  @Get('/pagination/:amount')
+  @ApiResponse({ type: [Card] })
+  @Get('pagination/:amount')
   getSortedCardsForPagination(
-    @Param('amount') amount: string,
+    @Query('amount') amount: string,
     @Query('type') type: string,
   ): Promise<Card[]> {
     return this.cardService.getSortedCardsForPagination(amount, type);
+  }
+
+  @ApiOperation({ summary: 'return description of card ' })
+  @ApiResponse({ type: Card })
+  @Get('description/:id')
+  getCards(@Param('id') id: string): Promise<Card> {
+    return this.cardService.getCardById(id);
   }
 
   @ApiOperation({ summary: 'add card in viewed' })
