@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { BadRequestException, HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { User } from './user.model';
 import { InjectModel } from '@nestjs/sequelize';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -10,17 +10,13 @@ import { NewPassword } from './dto/refresh-password.dto';
 import { UserRole } from 'src/role/role.model';
 import { RefreshPasswordRequest } from './dto/refresh-password-request.dto';
 import { emailConfig, EmailService } from './helpers/email-service';
-import * as nodemailer from 'nodemailer';
 import { RefreshPasswordAnswerCode } from './dto/refresh-password-answer-code';
 import { initWaitListLine, IWaitListLine } from '../models';
-import { BadRequestException } from '@nestjs/common';
-import { getRecordLine } from './helpers/helper-functions';
+import { checkCorrectSecret, checkPasswordIsEqual, checkTimeWell, getRecordLine } from './helpers/helper-functions';
 
 
 @Injectable()
 export class UserService{
-  // private secretWord = '';
-
   private waitList: IWaitListLine[] = [initWaitListLine];
 
   constructor(
@@ -63,19 +59,17 @@ export class UserService{
   }
 
   async getUserByEmail(email: string) {
-    const user = await this.userRepository.findOne({
+    return await this.userRepository.findOne({
       where: {email},
       include: {all: true},
     });
-    return user;
   }
 
   async getUserById(id: string) {
-    const user = await this.userRepository.findOne({
+    return await this.userRepository.findOne({
       where: {id},
       include: {all: true},
     });
-    return user;
   }
 
   async addRole(dto: AddRoleDto) {
@@ -121,13 +115,9 @@ export class UserService{
 
 // ****************************
   async refreshPasswordRequest(dto: RefreshPasswordRequest) {
-    let correctMail;
     let secretWord = '';
 
     try {
-      const mailUser = await this.getUserByEmail(dto.email);
-      correctMail = mailUser.email || '';
-
       const secretWord0 =Math.floor(Math.random() * 1000000);
       secretWord = secretWord0 > 100000 ? String(secretWord0) : String(secretWord0 + 100000);
 
@@ -148,41 +138,32 @@ export class UserService{
     } catch (err) {
       throw new BadRequestException(String(err), {cause: new  Error(), description: 'Error sending email'});
     }
-
+    // That for debugging
     const waitList = this.waitList;
     return { waitList };
   }
 
   async refreshPasswordAnswerCode(dto: RefreshPasswordAnswerCode) {
-    let isCorrectEmail = false;
-    let isCorrectSecret = false;
-    let isTimeWell = false;
     let user: User;
-    let isPasswordIsEqual = false;
+    let isMailWell = false;
+    const lineInWaitList = this.waitList.find((item) => item.email === dto.email);
 
     try {
-      user = await this.getUserByEmail(dto.email);
-      isCorrectEmail = user.email === dto.email;
-
-      const lineInWaitList = this.waitList.find((item) => item.email === dto.email);
-
-      if (lineInWaitList.email) {
-        isTimeWell = (((new Date().getTime()) - lineInWaitList.answerDate) / 60000) < 60;
-        isCorrectSecret = dto.secret === lineInWaitList.secret;
-        isPasswordIsEqual = dto.password === dto.newPassword;
-
-      }
+      user = (await (this.getUserByEmail(dto.email)));
+      if (user.email !== dto.email) new Error();
+      isMailWell = !!lineInWaitList.email;
     } catch (err) {
       throw new BadRequestException(String(err), {cause: new Error(), description: 'Your request is incorrect'});
     }
 
-    if (!isCorrectEmail) throw new BadRequestException('Bad email', {cause: new Error(), description: 'There is not such email' });
-    if (!isTimeWell) throw new BadRequestException('Something went wrong', {cause: new Error(), description: 'Your request is too late'});
-    if (!isCorrectSecret) throw new BadRequestException('Something went wrong', {cause: new Error(), description: 'Your secret is incorrect'});
-    if (!isPasswordIsEqual) throw new BadRequestException('Something went wrong', {cause: new Error(), description: "Password not equal copy"});
+    if (isMailWell) {
+      if (dto.secret !== lineInWaitList.secret) checkCorrectSecret(false);
+      if ((((new Date().getTime()) - lineInWaitList.answerDate) / 60000) > 60) checkTimeWell(false);
+      if (dto.password !== dto.newPassword) checkPasswordIsEqual(false);
+    }
 
-    this.waitList = this.waitList.filter((item) => item.email !== dto.email);
-    this.waitList = this.waitList.length ? this.waitList: [initWaitListLine];
+    // this.waitList = this.waitList.filter((item) => item.email !== dto.email);
+    // this.waitList = this.waitList.length ? this.waitList: [initWaitListLine];
     const hashPassword: string = await bcrypt.hash(dto.newPassword, 5);
     await user.update({password: hashPassword});
 
