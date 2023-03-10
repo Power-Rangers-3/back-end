@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable, UnauthorizedException } from '@nestjs/common';
 import { User } from './user.model';
 import { InjectModel } from '@nestjs/sequelize';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -38,14 +38,14 @@ export class UserService {
   async refreshPassword(dto: NewPassword, email: string) {
     const user = await this.getUserByEmail(email);
     if (!user) {
-      throw new HttpException('User is not found', HttpStatus.UNAUTHORIZED);
+      throw new UnauthorizedException();
     }
     if (email !== dto.email) {
-      throw new HttpException('Incorrect email', HttpStatus.UNAUTHORIZED);
+      throw new UnauthorizedException();
     }
     const passwordEquals = await bcrypt.compare(dto.password, user.password);
     if (!passwordEquals) {
-      throw new HttpException('Incorrect password', HttpStatus.UNAUTHORIZED);
+      throw new UnauthorizedException();
     }
     const hashPassword: string = await bcrypt.hash(dto.newPassword, 5);
     await user.update({ password: hashPassword });
@@ -77,7 +77,7 @@ export class UserService {
   async addRole(dto: AddRoleDto) {
     const user = await this.userRepository.findByPk(dto.userId);
     if (!user) {
-      throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+      throw new UnauthorizedException();
     }
     const role = await this.roleService.find(dto.role);
     if (!role) {
@@ -95,8 +95,12 @@ export class UserService {
     userDto: Partial<UpdateUserDto>,
   ): Promise<Partial<UpdateUserDto>> {
     const user = await this.userRepository.findByPk(id);
-    if (!user) throw new HttpException('User not found', HttpStatus.NOT_FOUND);
-    if (!userDto) throw new HttpException('No content', HttpStatus.NO_CONTENT);
+    if (!user) {
+      throw new UnauthorizedException();
+    }
+    if (!userDto) {
+      throw new HttpException('No content', HttpStatus.NO_CONTENT);
+    }
     await user.update(userDto);
     const { password, ...userData } = user.toJSON();
     return userData;
@@ -104,7 +108,9 @@ export class UserService {
 
   async deleteUserField(id: string, userField: string) {
     const user = await this.userRepository.findByPk(+id);
-    if (!user) throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+    if (!user) {
+      throw new UnauthorizedException();
+    }
     if (userField.includes('password') || userField.includes('email'))
       throw new HttpException(
         'password or email not be deleted',
