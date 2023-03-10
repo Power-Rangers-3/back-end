@@ -11,6 +11,8 @@
 ```bash
 git clone git@github.com:Power-Rangers-3/back-end.git
 
+npm i
+
 npm run go
 ```
 
