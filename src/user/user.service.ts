@@ -9,11 +9,12 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { NewPassword } from './dto/refresh-password.dto';
 import { UserRole } from 'src/role/role.model';
 import { RefreshPasswordRequest } from './dto/refresh-password-request.dto';
-import { EmailService } from './helpers/email-service';
+import { emailConfig, EmailService } from './helpers/email-service';
 import * as nodemailer from 'nodemailer';
 import { RefreshPasswordAnswerCode } from './dto/refresh-password-answer-code';
 import { initWaitListLine, IWaitListLine } from '../models';
 import { BadRequestException } from '@nestjs/common';
+import { getRecordLine } from './helpers/helper-functions';
 
 
 @Injectable()
@@ -123,45 +124,33 @@ export class UserService{
     let correctMail;
     let secretWord = '';
 
-    // const users = await this.userRepository.findAll();
-    // console.log(users.da);
-
     try {
-      const mail = await this.getUserByEmail(dto.email);
-      correctMail = mail.email ? mail.email: 'There is not such email 001'
-      const emailConfig: nodemailer.SentMessageInfo = {
-        host: process.env.SMTP_HOST,
-        port: Number(process.env.SMTP_PORT),
-        auth: {
-          user: process.env.SMTP_USER,
-          pass: process.env.SMTP_PASS,
-        },
-      }
+      const mailUser = await this.getUserByEmail(dto.email);
+      correctMail = mailUser.email || '';
 
       const secretWord0 =Math.floor(Math.random() * 1000000);
       secretWord = secretWord0 > 100000 ? String(secretWord0) : String(secretWord0 + 100000);
+
+      //Send email via SMTP
       const emailService = new EmailService(process.env.HTTP_FRONT, emailConfig);
       await emailService.sendPasswordResetEmail(dto.email, secretWord);
+
+      // Create new line in waitListItem or count++ if exist
+      const waitListItem = this.waitList.find((item) => item.email === dto.email) || initWaitListLine;
+      if (waitListItem.email) waitListItem.count += 1;
+
+      this.waitList = this.waitList.filter((item) => {
+        return item.email !== dto.email;
+      });
+      this.waitList.push(getRecordLine(dto.email, secretWord, new Date().getTime(), waitListItem.count));
+      if (this.waitList[0].email == '') this.waitList.shift();
+
     } catch (err) {
-      console.log(err);
-      correctMail = "There is no such email 002";
+      throw new BadRequestException(String(err), {cause: new  Error(), description: 'Error sending email'});
     }
 
-    const recordLine: IWaitListLine = {
-      email: dto.email,
-      secret: secretWord,
-      answerDate: new Date().getTime(),
-      count: 0,
-    };
-    // !!!!!????????? Do you Remove all lists except current?
-    this.waitList = this.waitList.filter((item) => {
-      return item.email !== dto.email;
-    });
-    this.waitList.push(recordLine);
-    if (this.waitList[0].email == ' ') this.waitList.shift();
-    console.log(this.waitList);
-
-    return {correctMail};
+    const waitList = this.waitList;
+    return { waitList };
   }
 
   async refreshPasswordAnswerCode(dto: RefreshPasswordAnswerCode) {
@@ -184,7 +173,7 @@ export class UserService{
 
       }
     } catch (err) {
-      throw new BadRequestException('Something went wrong', {cause: new Error(), description: 'Your request is incorrect'});
+      throw new BadRequestException(String(err), {cause: new Error(), description: 'Your request is incorrect'});
     }
 
     if (!isCorrectEmail) throw new BadRequestException('Bad email', {cause: new Error(), description: 'There is not such email' });

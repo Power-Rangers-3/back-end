@@ -6,8 +6,8 @@ export interface IWaitListLine{
 }
 
 export const initWaitListLine: IWaitListLine = {
-  email: ' ',
-  secret: ' ',
+  email: '',
+  secret: '',
   answerDate: new Date().getTime(),
   count: 0,
 }

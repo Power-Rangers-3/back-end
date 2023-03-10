@@ -1,12 +1,19 @@
-// import nodemailer  from 'nodemailer';
 import * as nodemailer from 'nodemailer';
+
+export const emailConfig: nodemailer.SentMessageInfo = {
+  host: process.env.SMTP_HOST,
+  port: Number(process.env.SMTP_PORT),
+  auth: {
+    user: process.env.SMTP_USER,
+    pass: process.env.SMTP_PASS,
+  },
+}
 
 export class EmailService {
   private readonly transporter: nodemailer.Transporter;
   private readonly baseUrl: string;
 
   constructor(baseUrl: string, emailConfig: nodemailer.SentMessageInfo) {
-    // console.log(emailConfig);
     this.transporter = nodemailer.createTransport(emailConfig);
     this.baseUrl = baseUrl;
   }
