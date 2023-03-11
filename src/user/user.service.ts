@@ -12,7 +12,13 @@ import { RefreshPasswordRequest } from './dto/refresh-password-request.dto';
 import { emailConfig, EmailService } from './helpers/email-service';
 import { RefreshPasswordAnswerCode } from './dto/refresh-password-answer-code';
 import { initWaitListLine, IWaitListLine } from '../models';
-import { checkCorrectSecret, checkPasswordIsEqual, checkTimeWell, getRecordLine } from './helpers/helper-functions';
+import {
+  checkCorrectSecret, checkDelayEmailSend,
+  checkPasswordIsEqual,
+  checkTimeWell,
+  checkWaitList,
+  getRecordLine
+} from './helpers/helper-functions';
 
 
 @Injectable()
@@ -113,11 +119,17 @@ export class UserService{
     return user;
   }
 
-// ****************************
   async refreshPasswordRequest(dto: RefreshPasswordRequest) {
     let secretWord = '';
 
+    this.waitList = checkWaitList(this.waitList);
+
     try {
+      // Create new line in waitListItem or count++ if exist
+      const waitListItem = this.waitList.find((item) => item.email === dto.email) || initWaitListLine;
+      if (waitListItem.email) waitListItem.count += 1;
+      checkDelayEmailSend(waitListItem);
+
       const secretWord0 =Math.floor(Math.random() * 1000000);
       secretWord = secretWord0 > 100000 ? String(secretWord0) : String(secretWord0 + 100000);
 
@@ -125,10 +137,7 @@ export class UserService{
       const emailService = new EmailService(process.env.HTTP_FRONT, emailConfig);
       await emailService.sendPasswordResetEmail(dto.email, secretWord);
 
-      // Create new line in waitListItem or count++ if exist
-      const waitListItem = this.waitList.find((item) => item.email === dto.email) || initWaitListLine;
-      if (waitListItem.email) waitListItem.count += 1;
-
+      // change current RecordLine in waitList
       this.waitList = this.waitList.filter((item) => {
         return item.email !== dto.email;
       });
@@ -138,9 +147,6 @@ export class UserService{
     } catch (err) {
       throw new BadRequestException(String(err), {cause: new  Error(), description: 'Error sending email'});
     }
-    // That for debugging
-    const waitList = this.waitList;
-    return { waitList };
   }
 
   async refreshPasswordAnswerCode(dto: RefreshPasswordAnswerCode) {
@@ -162,8 +168,6 @@ export class UserService{
       if (dto.password !== dto.newPassword) checkPasswordIsEqual(false);
     }
 
-    // this.waitList = this.waitList.filter((item) => item.email !== dto.email);
-    // this.waitList = this.waitList.length ? this.waitList: [initWaitListLine];
     const hashPassword: string = await bcrypt.hash(dto.newPassword, 5);
     await user.update({password: hashPassword});
 
