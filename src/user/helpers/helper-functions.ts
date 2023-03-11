@@ -55,9 +55,10 @@ export const checkDelayEmailSend = (lineInWaitList: IWaitListLine) => {
     (new Date().getTime() - lineInWaitList.answerDate) / 60000;
 
   const isTimeWell: boolean =
-    lineInWaitList.count < numberAttempts - 1 ||
-    requestIntervalMinutes > timeDelay1 ||
-    lineInWaitList.count < numberAttempts;
+    lineInWaitList.count < numberAttempts ||
+    (requestIntervalMinutes > timeDelay1 &&
+      (lineInWaitList.count === numberAttempts + 1 ||
+        lineInWaitList.count === numberAttempts));
 
   if (!isTimeWell) checkTimeWell(false);
 };
