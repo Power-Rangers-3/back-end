@@ -4,7 +4,6 @@ import {
   Delete,
   Get,
   HttpCode,
-  Headers,
   Param,
   Patch,
   Post,
