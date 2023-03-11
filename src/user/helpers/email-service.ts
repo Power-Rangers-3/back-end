@@ -7,7 +7,7 @@ export const emailConfig: nodemailer.SentMessageInfo = {
     user: process.env.SMTP_USER,
     pass: process.env.SMTP_PASS,
   },
-}
+};
 
 export class EmailService {
   private readonly transporter: nodemailer.Transporter;

@@ -19,13 +19,13 @@ import { emailConfig, EmailService } from './helpers/email-service';
 import { RefreshPasswordAnswerCode } from './dto/refresh-password-answer-code';
 import { initWaitListLine, IWaitListLine } from '../models';
 import {
-  checkCorrectSecret, checkDelayEmailSend,
+  checkCorrectSecret,
+  checkDelayEmailSend,
   checkPasswordIsEqual,
   checkTimeWell,
   checkWaitList,
-  getRecordLine
+  getRecordLine,
 } from './helpers/helper-functions';
-
 
 @Injectable()
 export class UserService {
@@ -137,50 +137,73 @@ export class UserService {
 
     try {
       // Create new line in waitListItem or count++ if exist
-      const waitListItem = this.waitList.find((item) => item.email === dto.email) || initWaitListLine;
+      const waitListItem =
+        this.waitList.find((item) => item.email === dto.email) ||
+        initWaitListLine;
       if (waitListItem.email) waitListItem.count += 1;
       checkDelayEmailSend(waitListItem);
 
-      const secretWord0 =Math.floor(Math.random() * 1000000);
-      secretWord = secretWord0 > 100000 ? String(secretWord0) : String(secretWord0 + 100000);
+      const secretWord0 = Math.floor(Math.random() * 1000000);
+      secretWord =
+        secretWord0 > 100000
+          ? String(secretWord0)
+          : String(secretWord0 + 100000);
 
       //Send email via SMTP
-      const emailService = new EmailService(process.env.HTTP_FRONT, emailConfig);
+      const emailService = new EmailService(
+        process.env.HTTP_FRONT,
+        emailConfig,
+      );
       await emailService.sendPasswordResetEmail(dto.email, secretWord);
 
       // change current RecordLine in waitList
       this.waitList = this.waitList.filter((item) => {
         return item.email !== dto.email;
       });
-      this.waitList.push(getRecordLine(dto.email, secretWord, new Date().getTime(), waitListItem.count));
+      this.waitList.push(
+        getRecordLine(
+          dto.email,
+          secretWord,
+          new Date().getTime(),
+          waitListItem.count,
+        ),
+      );
       if (this.waitList[0].email == '') this.waitList.shift();
-
     } catch (err) {
-      throw new BadRequestException(String(err), {cause: new  Error(), description: 'Error sending email'});
+      throw new BadRequestException(String(err), {
+        cause: new Error(),
+        description: 'Error sending email',
+      });
     }
   }
 
   async refreshPasswordAnswerCode(dto: RefreshPasswordAnswerCode) {
     let user: User;
     let isMailWell = false;
-    const lineInWaitList = this.waitList.find((item) => item.email === dto.email);
+    const lineInWaitList = this.waitList.find(
+      (item) => item.email === dto.email,
+    );
 
     try {
-      user = (await (this.getUserByEmail(dto.email)));
+      user = await this.getUserByEmail(dto.email);
       if (user.email !== dto.email) new Error();
       isMailWell = !!lineInWaitList.email;
     } catch (err) {
-      throw new BadRequestException(String(err), {cause: new Error(), description: 'Your request is incorrect'});
+      throw new BadRequestException(String(err), {
+        cause: new Error(),
+        description: 'Your request is incorrect',
+      });
     }
 
     if (isMailWell) {
       if (dto.secret !== lineInWaitList.secret) checkCorrectSecret(false);
-      if ((((new Date().getTime()) - lineInWaitList.answerDate) / 60000) > 60) checkTimeWell(false);
+      if ((new Date().getTime() - lineInWaitList.answerDate) / 60000 > 60)
+        checkTimeWell(false);
       if (dto.password !== dto.newPassword) checkPasswordIsEqual(false);
     }
 
     const hashPassword: string = await bcrypt.hash(dto.newPassword, 5);
-    await user.update({password: hashPassword});
+    await user.update({ password: hashPassword });
 
     return { user };
   }
