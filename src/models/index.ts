@@ -1,4 +1,4 @@
-export interface IWaitListLine{
+export interface IWaitListLine {
   email: string;
   secret: string;
   answerDate: number;
@@ -10,4 +10,4 @@ export const initWaitListLine: IWaitListLine = {
   secret: '',
   answerDate: new Date().getTime(),
   count: 0,
-}
+};

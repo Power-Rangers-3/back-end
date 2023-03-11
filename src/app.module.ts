@@ -9,7 +9,6 @@ import { Role } from './role/role.model';
 import { AuthController } from './auth/auth.controller';
 import { AuthService } from './auth/auth.service';
 import { AuthModule } from './auth/auth.module';
-import { FileModule } from './file/file.module';
 import { CardModule } from './card/card.module';
 import { UserCardFavorites } from './card/entities/user-card-favorites.model';
 import { UserCardViewed } from './card/entities/user-card-viewed.model';

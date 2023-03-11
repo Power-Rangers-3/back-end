@@ -4,7 +4,6 @@ import {
   Delete,
   Get,
   HttpCode,
-  Headers,
   Param,
   Patch,
   Post,
@@ -30,7 +29,6 @@ import { CurrentUser } from 'src/decorators/current-user';
 import { UserRole } from 'src/role/role.model';
 import { ResponseGetInfoDto } from './dto/response-get-info.dto';
 import { RefreshPasswordAnswerCode } from './dto/refresh-password-answer-code';
-
 
 @ApiTags('Users')
 @Controller('users')

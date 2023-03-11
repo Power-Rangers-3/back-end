@@ -52,9 +52,8 @@ export class CardController {
     return this.cardService.addFavorites(idCard, dto);
   }
 
-
   @ApiOperation({ summary: 'return list of sorted card by name' })
-  @ApiResponse({ type: [Card]})
+  @ApiResponse({ type: [Card] })
   @Get('/pagination/:amount')
   getSortedCardsForPagination(
     @Param('amount') amount: string,
