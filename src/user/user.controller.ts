@@ -4,6 +4,7 @@ import {
   Delete,
   Get,
   HttpCode,
+  HttpStatus,
   Param,
   Patch,
   Post,
@@ -76,7 +77,7 @@ export class UserController {
   }
 
   @ApiOperation({ summary: 'send secret and email to change password' })
-  @ApiResponse({ status: 200 })
+  @ApiResponse({ status: HttpStatus.OK })
   @Post('/refresh-password-answer-code')
   refreshPasswordAnswerCode(@Body() dto: RefreshPasswordAnswerCode) {
     return this.userService.refreshPasswordAnswerCode(dto);
