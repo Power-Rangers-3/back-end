@@ -39,6 +39,14 @@ export const checkCorrectSecret = (isCorrectSecret: boolean) => {
     });
 };
 
+export const checkCorrectEmail = (isCorrectSecret: boolean) => {
+  if (!isCorrectSecret)
+    throw new BadRequestException('Something went wrong', {
+      cause: new Error(),
+      description: 'Your email is incorrect',
+    });
+};
+
 export const checkWaitList = (waitList: IWaitListLine[]): IWaitListLine[] => {
   return waitList.filter((item) => {
     return (
