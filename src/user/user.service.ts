@@ -139,8 +139,6 @@ export class UserService {
     this.waitList = checkWaitList(this.waitList);
 
     try {
-      // const isCorrectEmail = await this.getUserByEmail(dto.email);
-      // if (!isCorrectEmail) checkCorrectEmail(false);
       // Create new line in waitListItem or count++ if exist
       const waitListItem =
         this.waitList.find((item) => item.email === dto.email) ||
