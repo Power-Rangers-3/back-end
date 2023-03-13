@@ -73,8 +73,7 @@ export class AuthService {
   }
 
   private async validateRefreshToken(token: string) {
-    const user = this.jwtService.verify(token);
-    return user;
+    return this.jwtService.verify(token);
   }
 
   async createRolesAndSuperAdmin(): Promise<User> {
