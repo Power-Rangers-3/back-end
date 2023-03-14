@@ -15,7 +15,10 @@ async function start() {
     },
   });
 
-  app.useGlobalPipes(new ValidationPipe());
+  app.useGlobalPipes(new ValidationPipe({
+    forbidNonWhitelisted: true,
+    whitelist: true,
+  }));
   const config = new DocumentBuilder()
     .setTitle('Description of BD for TownSend')
     .setDescription('Docs for REST API')
