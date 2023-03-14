@@ -27,6 +27,7 @@ import {
   checkWaitList,
   getRecordLine,
 } from './helpers/helper-functions';
+import { CustomPermissionSettingsDto } from './dto/permissions.dto';
 
 @Injectable()
 export class UserService {
@@ -47,7 +48,7 @@ export class UserService {
     return user;
   }
 
-  async refreshPassword(dto: NewPassword, email: string) {
+  async refreshPassword(dto: NewPassword, email: string): Promise<{}> {
     const user = await this.getUserByEmail(email);
     if (!user) {
       throw new UnauthorizedException();
@@ -77,8 +78,8 @@ export class UserService {
     });
   }
 
-  async getUserById(id: string) {
-    return await this.userRepository.findOne({
+  getUserById(id: string) {
+    return this.userRepository.findOne({
       where: { id },
       include: { all: true },
     });
@@ -117,7 +118,7 @@ export class UserService {
   }
 
   async deleteUserField(id: string, userField: string) {
-    const user = await this.userRepository.findByPk(+id);
+    const user = await this.userRepository.findByPk(id);
     if (!user) {
       throw new UnauthorizedException();
     }
@@ -209,5 +210,15 @@ export class UserService {
     await user.update({ password: hashPassword });
 
     return { user };
+  }
+
+  async updatePermissions(id: string, dto: CustomPermissionSettingsDto): Promise<Partial<User>> {
+    const user = await this.userRepository.findByPk(id)
+    if(!user) {
+      throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+    }
+    await user.update(dto);
+    const { password, ...userData } = user.toJSON();
+    return userData;
   }
 }

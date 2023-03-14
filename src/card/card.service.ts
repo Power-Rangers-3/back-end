@@ -50,35 +50,35 @@ export class CardService {
     return card.toJSON();
   }
 
-  async getSortedCardsForPagination(amount, type): Promise<Card[]> {
+  async getSortedCardsForPagination(amount: string, type: string): Promise<Card[]> {
     if (type === 'DESC') {
-      if (amount < 1) {
+      if (Number(amount) < 1) {
         throw new HttpException(
           'Wrong amount of cards',
           HttpStatus.BAD_REQUEST,
         );
       }
       this.cardRepository.findAll({
-        offset: amount * 10 - 10,
+        offset: Number(amount) * 10 - 10,
         limit: 10,
         order: [['name', 'DESC']],
       });
     } else if (type === 'ASC') {
-      if (amount < 1) {
+      if (Number(amount) < 1) {
         throw new HttpException(
           'Wrong amount of cards',
           HttpStatus.BAD_REQUEST,
         );
       }
       return this.cardRepository.findAll({
-        offset: amount * 10 - 10,
+        offset: Number(amount) * 10 - 10,
         limit: 10,
         order: ['name'],
       });
     } else throw new HttpException('Wrong sorted type', HttpStatus.BAD_REQUEST);
   }
 
-  async getCardById(id): Promise<Card> {
+  async getCardById(id: string): Promise<Card> {
     const card = this.cardRepository.findByPk(id);
     if (!card) {
       throw new HttpException('Card not found', HttpStatus.NOT_FOUND);
