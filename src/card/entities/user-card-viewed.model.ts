@@ -8,11 +8,7 @@ import {
 import { User } from 'src/user/user.model';
 import { Card } from './card.model';
 
-@Table({
-  tableName: 'user_cards_favorites',
-  createdAt: false,
-  updatedAt: false,
-})
+@Table({ tableName: 'user_cards_favorites' })
 export class UserCardViewed extends Model<UserCardViewed> {
   @ForeignKey(() => Card)
   @Column({ type: DataType.UUID })

@@ -29,6 +29,8 @@ import { CurrentUser } from 'src/decorators/current-user';
 import { UserRole } from 'src/role/role.model';
 import { ResponseGetInfoDto } from './dto/response-get-info.dto';
 import { RefreshPasswordAnswerCode } from './dto/refresh-password-answer-code';
+import { CustomPermissionSettingsDto } from './dto/permissions.dto';
+import { UserDataResponseDto } from './dto/user-data-response.dto';
 
 @ApiTags('Users')
 @Controller('users')
@@ -85,7 +87,7 @@ export class UserController {
   @ApiBearerAuth()
   @ApiOperation({ summary: 'update user data' })
   @ApiBody({ type: UpdateUserDto })
-  @ApiResponse({ status: 200, type: User })
+  @ApiResponse({ status: 200, type: UserDataResponseDto })
   @UseGuards(JwtAuthGuard)
   @Patch('/:id/update')
   update(
@@ -100,8 +102,23 @@ export class UserController {
   @ApiBody({ enum: ['phone', 'telegram', 'name', 'fullname'] })
   @ApiResponse({ status: 200, type: User })
   @UseGuards(JwtAuthGuard)
-  @Delete('/:id/delete')
+  @Delete('/:id/delete-field')
   delete(@Param('id') id: string, @Body() field: string) {
     return this.userService.deleteUserField(id, field);
+  }
+
+  @ApiOperation({ summary: 'update user permissions and restrictions settings (only for Admin/SuperAdmin)' })
+  @Post('/:id/permissions')
+  @HttpCode(200)
+  @ApiBody({ type: CustomPermissionSettingsDto })
+  @ApiBearerAuth()
+  @Role(UserRole.SuperAdmin, UserRole.Admin)
+  @UseGuards(RolesGuard)
+  @ApiResponse({ status: 200, type: UserDataResponseDto })
+  updatePermissions(
+    @Param('id') id: string,
+    @Body() dto: CustomPermissionSettingsDto
+    ): Promise<Partial<User>> {
+      return this.userService.updatePermissions(id, dto)
   }
 }

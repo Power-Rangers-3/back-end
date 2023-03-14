@@ -76,7 +76,21 @@ export class User extends Model<User, UserCreationAttr> {
   role: Role;
 
   @HasOne(() => File)
-  file?: File[];
+  file: File;
+
+  @ApiProperty({
+    example: 30,
+    description: 'number of days to store cards in favorites, default value 30'
+  })
+  @Column({ type: DataType.INTEGER, defaultValue: 30 })
+  storageTimeForFavoriteCards: number;
+
+  @ApiProperty({
+    example: 10,
+    description: 'the number of cards a user can store in favorites, default value 10'
+  })
+  @Column({ type: DataType.INTEGER, defaultValue: 10 })
+  numberOfFavoriteCards: number;
 
   @BelongsToMany(() => Card, () => UserCardFavorites)
   cardsFavorites: User[];
